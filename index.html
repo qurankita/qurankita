@@ -989,171 +989,102 @@ function renderAyat(ayat){
 }
 
 // ══ AUDIO ENGINE ══
-// Satu token per sesi putar — jika token berubah, semua callback lama diabaikan
-let playToken = 0;
-
-// FUNGSI TERPUSAT: satu-satunya tempat audio diputar
-// Mengembalikan Promise: resolve(true) jika selesai normal, resolve(false) jika dibatalkan/error
-function playAudio(url, token) {
-  return new Promise((resolve) => {
-    // Jika token sudah tidak valid (ada pemanggilan baru), abaikan
-    if (token !== playToken) { resolve(false); return; }
-
-    // Bersihkan semua event lama sebelum mulai
-    audio.onended = null;
-    audio.onerror = null;
-    audio.pause();
-
-    audio.src = url;
-
-    audio.onended = () => {
-      audio.onended = null;
-      audio.onerror = null;
-      resolve(token === playToken); // true hanya jika masih token aktif
-    };
-
-    audio.onerror = () => {
-      audio.onended = null;
-      audio.onerror = null;
-      resolve(false); // error = anggap selesai, lanjut ke tahap berikut
-    };
-
-    audio.load();
-    audio.play().catch(() => {
-      // Browser blokir autoplay atau error network — anggap selesai
-      audio.onended = null;
-      audio.onerror = null;
-      resolve(false);
-    });
-  });
-}
-
-// Fungsi utama sekuensial: bismillah arab → bismillah terj → ayat 1 arab → ayat 1 terj → ...
-async function runSequence(startAyat, token) {
-  const [surahNum,,, maxAyat] = curSurah;
-  const showBism = surahNum !== 1 && surahNum !== 9;
-
-  // Fase bismillah (hanya jika bukan surah 1 & 9, dan mulai dari awal)
-  if (showBism && startAyat === 0) {
-    // Arab bismillah
-    curAyat = 0;
+function playAll(){
+  if(!curSurah||!curAyatData.length)return;
+  const [n]=curSurah;
+  playing=true;paused=false;updatePlayBtn();
+  if(n!==1&&n!==9){
+    curAyat=0;updatePlayerBismillah();
     setPhase('arab');
-    updatePlayerBismillah();
-    updatePlayBtn();
-    const ok1 = await playAudio(bismillahArabURL(), token);
-    if (!ok1 || token !== playToken) return;
-
-    // Terjemah bismillah
-    setPhase('terj');
-    updatePlayerBismillah();
-    const ok2 = await playAudio(bismillahTerjURL(), token);
-    if (token !== playToken) return;
-
-    startAyat = 1;
-  } else if (startAyat === 0) {
-    startAyat = 1;
+    audio.src=bismillahArabURL();
+    audio.play().catch(()=>playBismTerj());
+    audio.onended=()=>{if(playing&&!paused)playBismTerj();};
+  } else {
+    playFromAyat(1);
   }
-
-  // Loop ayat
-  for (let n = startAyat; n <= maxAyat; n++) {
-    if (token !== playToken) return; // dihentikan dari luar
-
-    curAyat = n;
-    const ayatObj = curAyatData.find(a => a.nomorAyat === n);
-    if (!ayatObj) continue;
-
-    // Arab
-    setPhase('arab');
-    updatePlayerUI();
-    setupMediaSession();
-    scrollToAyat(n);
-
-    const arabUrl = getAudioURL(ayatObj);
-    if (arabUrl) {
-      const okArab = await playAudio(arabUrl, token);
-      if (token !== playToken) return;
-    }
-
-    // Terjemah
-    setPhase('terj');
-    updatePlayerUI();
-    const tUrl = terjURL(surahNum, n);
-    await playAudio(tUrl, token); // error/skip otomatis, tidak stop
-    if (token !== playToken) return;
-  }
-
-  // Selesai semua ayat
-  if (token === playToken) stopAudio();
 }
 
-function playAll() {
-  if (!curSurah || !curAyatData.length) return;
-  playing = true; paused = false;
-  playToken++; // batalkan semua sequence sebelumnya
-  updatePlayBtn();
-  runSequence(0, playToken);
+function playBismTerj(){
+  setPhase('terj');
+  audio.src=bismillahTerjURL();
+  audio.play().catch(()=>startAyat(1));
+  audio.onended=()=>{if(playing&&!paused)startAyat(1);};
 }
 
-function playFromAyat(num) {
-  if (!curSurah || !curAyatData.length) return;
-  playing = true; paused = false;
-  playToken++;
-  updatePlayBtn();
-  runSequence(num, playToken);
+function playFromAyat(num){
+  if(!curSurah||!curAyatData.length)return;
+  curAyat=num;playing=true;paused=false;
+  updatePlayBtn();updatePlayerUI();
+  startAyat(num);
 }
 
-function stopAudio() {
-  playToken++; // batalkan sequence yang sedang berjalan
-  playing = false; paused = false;
-  audio.onended = null;
-  audio.onerror = null;
-  audio.pause();
-  audio.src = '';
-  setPhase('idle'); updatePlayBtn();
-  document.querySelectorAll('.ayat-item').forEach(el => el.classList.remove('playing'));
+function startAyat(num){
+  curAyat=num;
+  const ayatObj=curAyatData.find(a=>a.nomorAyat===num);
+  if(!ayatObj)return;
+  setPhase('arab');
+  updatePlayerUI();setupMediaSession();
+  const url=getAudioURL(ayatObj);
+  if(!url){playTerj();return;}
+  audio.src=url;
+  audio.play().catch(()=>playTerj());
+  audio.onended=()=>{if(playing&&!paused)playTerj();};
 }
 
-function togglePlay() {
-  if (!curSurah) return;
-  if (playing && !paused) {
-    // Pause: hentikan audio tapi simpan posisi
-    paused = true;
-    playToken++; // batalkan sequence agar callback tidak jalan saat paused
-    audio.pause();
-    updatePlayBtn(); setPhase('idle');
-  } else if (paused) {
-    // Resume: mulai ulang dari ayat saat ini
-    paused = false; playing = true;
-    playToken++;
-    updatePlayBtn();
-    runSequence(curAyat || 1, playToken);
+function playTerj(){
+  setPhase('terj');
+  const url=terjURL(curSurah[0],curAyat);
+  audio.src=url;
+  audio.onerror=()=>{audio.onerror=null;nextAuto();};
+  audio.play().catch(()=>nextAuto());
+  audio.onended=()=>{if(playing&&!paused)nextAuto();};
+}
+
+function nextAuto(){
+  if(!playing||paused)return;
+  const max=curSurah[3];
+  if(curAyat>=max){stopAudio();return;}
+  curAyat++;
+  scrollToAyat(curAyat);
+  startAyat(curAyat);
+}
+
+function stopAudio(){
+  playing=false;paused=false;
+  audio.pause();audio.src='';
+  audio.onerror=null;audio.onended=null;
+  setPhase('idle');updatePlayBtn();
+  document.querySelectorAll('.ayat-item').forEach(el=>el.classList.remove('playing'));
+}
+
+function togglePlay(){
+  if(!curSurah)return;
+  if(playing&&!paused){
+    paused=true;audio.pause();
+    updatePlayBtn();setPhase('idle');
+  } else if(paused){
+    paused=false;playing=true;
+    audio.play().catch(()=>{});
+    updatePlayBtn();setPhase(phase==='idle'?'arab':phase);
   } else {
     playAll();
   }
 }
 
-function prevAyat() {
-  if (!curSurah) return;
-  const target = Math.max(1, (curAyat || 1) - 1);
-  scrollToAyat(target);
-  if (playing && !paused) { playFromAyat(target); }
-  else { curAyat = target; updatePlayerUI(); }
+function prevAyat(){
+  if(!curSurah)return;
+  if(curAyat>1){curAyat--;scrollToAyat(curAyat);}
+  if(playing&&!paused)startAyat(curAyat);
+}
+function nextAyat(){
+  if(!curSurah)return;
+  if(curAyat<curSurah[3]){curAyat++;scrollToAyat(curAyat);}
+  if(playing&&!paused)startAyat(curAyat);
 }
 
-function nextAyat() {
-  if (!curSurah) return;
-  const target = Math.min(curSurah[3], (curAyat || 1) + 1);
-  scrollToAyat(target);
-  if (playing && !paused) { playFromAyat(target); }
-  else { curAyat = target; updatePlayerUI(); }
-}
-
-function onQariChange() {
-  qari = document.getElementById('qariSelect').value;
-  // Jika sedang memutar fase arab, restart ayat saat ini dengan qari baru
-  if (playing && !paused && curAyat > 0 && phase === 'arab') {
-    playFromAyat(curAyat);
-  }
+function onQariChange(){
+  qari=document.getElementById('qariSelect').value;
+  if(playing&&!paused&&curAyat>0&&phase==='arab')startAyat(curAyat);
 }
 
 function scrollToAyat(num){
