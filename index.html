@@ -13,7 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --bg:        #0d1117;
+  --bg:        #030712;
   --bg2:       #161b22;
   --bg3:       #1c2333;
   --bg4:       #21262d;
@@ -36,13 +36,18 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text1);font-family:var(--font);font-size:15px;min-height:100dvh;overflow-x:hidden}
+body{
+  background:#030712;
+  color:var(--text1);font-family:var(--font);font-size:15px;min-height:100dvh;overflow-x:hidden
+}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 
-/* ══ CANVAS BACKGROUND ══ */
-#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.55;}
+/* ══ COSMIC CANVAS ══ */
+#cosmicCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+
 
 /* ══ NAVBAR ══ */
 .navbar{
@@ -50,7 +55,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--font);font-size:1
   height:var(--nav-h);
   display:flex;align-items:center;justify-content:space-between;
   padding:0 32px;
-  background:rgba(13,17,23,0.85);
+  background:rgba(3,7,18,0.85);
   backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border2);
 }
@@ -297,7 +302,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--font);font-size:1
   position:fixed;bottom:0;left:0;right:0;z-index:200;
   height:calc(var(--player-h) + var(--safe-b));
   padding-bottom:var(--safe-b);
-  background:rgba(15,20,28,0.97);
+  background:rgba(3,7,18,0.98);
   backdrop-filter:blur(24px);
   border-top:1px solid var(--border2);
   display:flex;align-items:center;
@@ -376,7 +381,7 @@ body{background:var(--bg);color:var(--text1);font-family:var(--font);font-size:1
 /* ══ MOBILE NAV ══ */
 .mobile-nav{
   display:none;position:fixed;top:0;left:0;right:0;z-index:300;
-  height:56px;background:rgba(13,17,23,0.97);
+  height:56px;background:rgba(3,7,18,0.97);
   backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);
   align-items:center;padding:0 16px;gap:10px;
 }
@@ -413,8 +418,10 @@ body{background:var(--bg);color:var(--text1);font-family:var(--font);font-size:1
 </head>
 <body>
 
-<!-- CANVAS BACKGROUND ANIMASI -->
-<canvas id="bgCanvas"></canvas>
+
+
+<!-- COSMIC BACKGROUND -->
+<canvas id="cosmicCanvas"></canvas>
 
 <!-- MOBILE NAV -->
 <div class="mobile-nav" id="mobileNav">
@@ -613,69 +620,116 @@ body{background:var(--bg);color:var(--text1);font-family:var(--font);font-size:1
 </div>
 
 <script>
-// ══ ANIMATED BACKGROUND CANVAS (seperti equran.id) ══
+
+
+// ══ COSMIC BACKGROUND ══
 (function(){
-  const canvas = document.getElementById('bgCanvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, particles = [];
+  const cv = document.getElementById('cosmicCanvas');
+  const cx = cv.getContext('2d');
+  let W, H;
 
+  // Resize canvas
   function resize(){
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
+    W = cv.width = window.innerWidth;
+    H = cv.height = window.innerHeight;
   }
 
-  function Particle(){
-    this.x = Math.random()*W;
-    this.y = Math.random()*H;
-    this.r = Math.random()*1.8+0.4;
-    this.vx = (Math.random()-0.5)*0.3;
-    this.vy = (Math.random()-0.5)*0.3;
-    this.alpha = Math.random()*0.5+0.1;
-  }
+  // Bintang — lebih besar dan bergerak lebih cepat
+  const STARS = Array.from({length: 260}, () => ({
+    x: Math.random(),
+    y: Math.random(),
+    r: Math.random() * 2.2 + 0.6,        // lebih besar
+    alpha: Math.random() * 0.9 + 0.2,
+    twinkleSpeed: Math.random() * 0.05 + 0.02,  // lebih cepat berkedip
+    twinklePhase: Math.random() * Math.PI * 2,
+    vx: (Math.random() - 0.5) * 0.00018, // bergerak lebih cepat
+    vy: (Math.random() - 0.5) * 0.00018,
+  }));
 
-  function init(){
-    resize();
-    particles = Array.from({length:120}, ()=>new Particle());
-  }
+  // Nebula — dominan ungu & biru seperti referensi, lebih besar & lebih pekat
+  const NEBULAS = [
+    { x:0.25, y:0.25, r:0.65, color:'rgba(88,28,220,',   vx:0.00005, vy:0.00004, phase:0 }, // ungu tua kiri atas
+    { x:0.75, y:0.2,  r:0.55, color:'rgba(37,99,235,',   vx:-0.00004,vy:0.00006, phase:1 }, // biru kanan atas
+    { x:0.5,  y:0.55, r:0.70, color:'rgba(109,40,217,',  vx:0.00003, vy:-0.00005,phase:2 }, // ungu tengah besar
+    { x:0.15, y:0.7,  r:0.45, color:'rgba(124,58,237,',  vx:0.00006, vy:0.00003, phase:3 }, // ungu kiri bawah
+    { x:0.85, y:0.75, r:0.42, color:'rgba(147,51,234,',  vx:-0.00005,vy:-0.00004,phase:4 }, // ungu kanan bawah
+    { x:0.5,  y:0.1,  r:0.40, color:'rgba(59,130,246,',  vx:0.00004, vy:0.00005, phase:5 }, // biru atas tengah
+  ];
+
+  let tick = 0;
 
   function draw(){
-    ctx.clearRect(0,0,W,H);
-    // Gradient overlay
-    const g = ctx.createRadialGradient(W/2,0,0,W/2,0,H*0.8);
-    g.addColorStop(0,'rgba(212,168,67,0.04)');
-    g.addColorStop(1,'rgba(13,17,23,0)');
-    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-    // Particles
-    particles.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy;
-      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
-      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(212,168,67,${p.alpha})`;
-      ctx.fill();
+    tick++;
+    cx.clearRect(0, 0, W, H);
+
+    // Background dasar ungu-biru sangat gelap
+    cx.fillStyle = '#07030f';
+    cx.fillRect(0, 0, W, H);
+
+    // Gambar nebula berlapis — lebih pekat
+    NEBULAS.forEach(n => {
+      n.x += n.vx; n.y += n.vy;
+      if(n.x < -0.4) n.x = 1.4;
+      if(n.x > 1.4)  n.x = -0.4;
+      if(n.y < -0.4) n.y = 1.4;
+      if(n.y > 1.4)  n.y = -0.4;
+
+      const pulse = 0.04 * Math.sin(tick * 0.006 + n.phase);
+      const grd = cx.createRadialGradient(
+        n.x * W, n.y * H, 0,
+        n.x * W, n.y * H, n.r * Math.max(W, H)
+      );
+      grd.addColorStop(0,   n.color + (0.38 + pulse) + ')');
+      grd.addColorStop(0.3, n.color + (0.22 + pulse * 0.5) + ')');
+      grd.addColorStop(0.7, n.color + '0.07)');
+      grd.addColorStop(1,   n.color + '0)');
+      cx.fillStyle = grd;
+      cx.fillRect(0, 0, W, H);
     });
-    // Lines between nearby particles
-    for(let i=0;i<particles.length;i++){
-      for(let j=i+1;j<particles.length;j++){
-        const dx=particles[i].x-particles[j].x;
-        const dy=particles[i].y-particles[j].y;
-        const d=Math.sqrt(dx*dx+dy*dy);
-        if(d<120){
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x,particles[i].y);
-          ctx.lineTo(particles[j].x,particles[j].y);
-          ctx.strokeStyle=`rgba(212,168,67,${0.08*(1-d/120)})`;
-          ctx.lineWidth=0.5;
-          ctx.stroke();
-        }
-      }
-    }
+
+    // Gambar bintang dengan efek twinkle + gerak
+    STARS.forEach(s => {
+      s.twinklePhase += s.twinkleSpeed;
+      s.x += s.vx; s.y += s.vy;
+      if(s.x < 0) s.x = 1; if(s.x > 1) s.x = 0;
+      if(s.y < 0) s.y = 1; if(s.y > 1) s.y = 0;
+
+      const a = s.alpha * (0.45 + 0.55 * Math.sin(s.twinklePhase));
+      cx.beginPath();
+      cx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+      cx.fillStyle = `rgba(255,255,255,${a})`;
+      cx.fill();
+    });
+
+    // Bintang terang dengan sinar silang (+)
+    STARS.filter((_,i) => i % 15 === 0).forEach(s => {
+      const a = s.alpha * (0.5 + 0.5 * Math.sin(s.twinklePhase));
+      const size = s.r * 4;
+      cx.strokeStyle = `rgba(255,255,255,${a * 0.5})`;
+      cx.lineWidth = 0.7;
+      cx.beginPath(); cx.moveTo(s.x*W-size, s.y*H); cx.lineTo(s.x*W+size, s.y*H); cx.stroke();
+      cx.beginPath(); cx.moveTo(s.x*W, s.y*H-size); cx.lineTo(s.x*W, s.y*H+size); cx.stroke();
+    });
+
+    // Titik cahaya ungu/biru terang (seperti bintang besar di referensi)
+    STARS.filter((_,i) => i % 40 === 0).forEach(s => {
+      const a = 0.7 + 0.3 * Math.sin(s.twinklePhase * 1.5);
+      const grd = cx.createRadialGradient(s.x*W, s.y*H, 0, s.x*W, s.y*H, s.r*6);
+      const colors = ['rgba(180,120,255,', 'rgba(120,160,255,', 'rgba(220,180,255,'];
+      const c = colors[Math.floor(s.x * colors.length)];
+      grd.addColorStop(0, c + a + ')');
+      grd.addColorStop(1, c + '0)');
+      cx.fillStyle = grd;
+      cx.beginPath();
+      cx.arc(s.x*W, s.y*H, s.r*6, 0, Math.PI*2);
+      cx.fill();
+    });
+
     requestAnimationFrame(draw);
   }
 
-  window.addEventListener('resize',resize);
-  init(); draw();
+  window.addEventListener('resize', resize);
+  resize(); draw();
 })();
 
 // ══ DATA SURAH ══
