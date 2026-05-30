@@ -3,946 +3,1069 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<meta name="theme-color" content="#0a0a0a"/>
+<meta name="theme-color" content="#0d1117"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="description" content="Quran Kita — Al-Quran Digital dengan Terjemahan Suara Bahasa Indonesia"/>
 <title>Quran Kita — Quran Terjemah Suara</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --bg-base:      #0a0a0a;
-    --bg-panel:     #111111;
-    --bg-card:      #1a1a1a;
-    --bg-hover:     #242424;
-    --bg-active:    #2a2a2a;
-    --gold:         #c9a84c;
-    --gold-dim:     #8a6f2e;
-    --gold-glow:    rgba(201,168,76,0.15);
-    --gold-subtle:  rgba(201,168,76,0.07);
-    --text-primary: #f0ece0;
-    --text-sec:     #a09880;
-    --text-dim:     #5a5245;
-    --border:       rgba(201,168,76,0.12);
-    --border-dim:   rgba(255,255,255,0.05);
-    --player-h:     90px;
-    --sidebar-w:    280px;
-    --radius:       10px;
-    --font-body:    'Plus Jakarta Sans', sans-serif;
-    --font-arabic:  'Amiri', serif;
-    --safe-bottom:  env(safe-area-inset-bottom, 0px);
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; background: var(--bg-base); color: var(--text-primary); font-family: var(--font-body); font-size: 14px; overflow: hidden; }
+:root{
+  --bg:        #0d1117;
+  --bg2:       #161b22;
+  --bg3:       #1c2333;
+  --bg4:       #21262d;
+  --gold:      #d4a843;
+  --gold2:     #b8901f;
+  --gold-dim:  rgba(212,168,67,0.15);
+  --gold-faint:rgba(212,168,67,0.06);
+  --teal:      #58a6ff;
+  --text1:     #e6edf3;
+  --text2:     #8b949e;
+  --text3:     #484f58;
+  --border:    rgba(212,168,67,0.15);
+  --border2:   rgba(240,246,252,0.07);
+  --player-h:  80px;
+  --nav-h:     64px;
+  --font:      'Inter',sans-serif;
+  --font-arab: 'Scheherazade New','Amiri',serif;
+  --safe-b:    env(safe-area-inset-bottom,0px);
+  --r:         12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text1);font-family:var(--font);font-size:15px;min-height:100dvh;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 
-  /* ── LAYOUT ── */
-  .app {
-    display: grid;
-    grid-template-columns: var(--sidebar-w) 1fr;
-    grid-template-rows: 1fr calc(var(--player-h) + var(--safe-bottom));
-    grid-template-areas: "sidebar main" "player player";
-    height: 100dvh;
-  }
+/* ══ CANVAS BACKGROUND ══ */
+#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.55;}
 
-  /* ── SIDEBAR ── */
-  .sidebar {
-    grid-area: sidebar;
-    background: var(--bg-panel);
-    border-right: 1px solid var(--border-dim);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .sidebar-logo {
-    padding: 20px 20px 14px;
-    border-bottom: 1px solid var(--border-dim);
-    flex-shrink: 0;
-  }
-  /* FIX 1: Logo sebagai link homepage */
-  .logo-link {
-    text-decoration: none;
-    display: block;
-  }
-  .logo-text {
-    font-size: 19px;
-    font-weight: 700;
-    color: var(--gold);
-    letter-spacing: 0.03em;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .logo-link:hover .logo-text { color: #e0be6a; }
-  .logo-icon {
-    width: 32px; height: 32px;
-    background: var(--gold-glow);
-    border: 1px solid var(--gold-dim);
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-  }
-  .logo-sub {
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 4px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .sidebar-search { padding: 10px 12px; flex-shrink: 0; }
-  .search-box {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-dim);
-    border-radius: 8px;
-    padding: 8px 12px;
-    transition: border-color 0.2s;
-  }
-  .search-box:focus-within { border-color: var(--gold-dim); }
-  .search-box svg { color: var(--text-dim); flex-shrink: 0; }
-  .search-box input {
-    background: none; border: none; outline: none;
-    color: var(--text-primary); font-family: var(--font-body);
-    font-size: 13px; width: 100%;
-  }
-  .search-box input::placeholder { color: var(--text-dim); }
-  .sidebar-label {
-    padding: 6px 20px 4px;
-    font-size: 10px; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--text-dim);
-    font-weight: 600; flex-shrink: 0;
-  }
-  .surah-list { flex: 1; overflow-y: auto; padding: 0 8px 8px; }
-  .surah-list::-webkit-scrollbar { width: 4px; }
-  .surah-list::-webkit-scrollbar-track { background: transparent; }
-  .surah-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-  .surah-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 7px 10px; border-radius: 8px; cursor: pointer;
-    transition: background 0.15s; border: 1px solid transparent;
-  }
-  .surah-item:hover { background: var(--bg-hover); }
-  .surah-item.active { background: var(--gold-subtle); border-color: var(--border); }
-  .surah-num {
-    width: 26px; height: 26px; border-radius: 6px;
-    background: var(--bg-active);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px; color: var(--text-sec); font-weight: 600; flex-shrink: 0;
-  }
-  .surah-item.active .surah-num { background: var(--gold-glow); color: var(--gold); }
-  .surah-info { flex: 1; min-width: 0; }
-  .surah-name-id {
-    font-size: 13px; font-weight: 500; color: var(--text-primary);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .surah-item.active .surah-name-id { color: var(--gold); }
-  .surah-meta { font-size: 10px; color: var(--text-dim); margin-top: 1px; }
-  .surah-name-ar { font-family: var(--font-arabic); font-size: 14px; color: var(--text-sec); flex-shrink: 0; }
-  .surah-item.active .surah-name-ar { color: var(--gold); }
+/* ══ NAVBAR ══ */
+.navbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;
+  background:rgba(13,17,23,0.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border2);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;}
+.nav-logo-icon{
+  width:36px;height:36px;border-radius:10px;
+  background:var(--gold-dim);border:1px solid var(--gold2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.nav-logo-wrap{}
+.nav-logo-name{font-size:17px;font-weight:700;color:var(--gold);letter-spacing:0.01em;}
+.nav-logo-sub{font-size:10px;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase;margin-top:1px;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-link{
+  background:none;border:none;color:var(--text2);
+  font-family:var(--font);font-size:13px;cursor:pointer;
+  padding:6px 14px;border-radius:8px;transition:all 0.2s;
+  text-decoration:none;display:inline-block;
+}
+.nav-link:hover{background:var(--bg3);color:var(--text1);}
+.nav-link.active{background:var(--gold-dim);color:var(--gold);}
 
-  /* ── MAIN ── */
-  .main { grid-area: main; overflow-y: auto; background: var(--bg-base); position: relative; }
-  .main::-webkit-scrollbar { width: 6px; }
-  .main::-webkit-scrollbar-track { background: transparent; }
-  .main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  .main-header {
-    position: sticky; top: 0; z-index: 10;
-    background: linear-gradient(to bottom, var(--bg-base) 80%, transparent);
-    padding: 20px 28px 14px;
-    display: flex; align-items: center; gap: 16px;
-    border-bottom: 1px solid var(--border-dim);
-  }
-  .surah-hero { flex: 1; }
-  .surah-hero-ar { font-family: var(--font-arabic); font-size: 26px; color: var(--gold); line-height: 1.4; }
-  .surah-hero-id { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-top: 2px; }
-  .surah-hero-meta { font-size: 11px; color: var(--text-sec); margin-top: 3px; }
-  .btn-play-all {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--gold); color: #0a0a0a;
-    border: none; border-radius: 50px; padding: 9px 20px;
-    font-family: var(--font-body); font-size: 13px; font-weight: 700;
-    cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
-  }
-  .btn-play-all:hover { background: #e0be6a; transform: scale(1.02); }
-  .basmalah {
-    text-align: center; padding: 20px 28px 6px;
-    font-family: var(--font-arabic); font-size: 26px;
-    color: var(--gold-dim); letter-spacing: 0.02em;
-  }
-  .ayat-list { padding: 6px 28px 28px; }
-  .ayat-card {
-    display: flex; gap: 18px; padding: 18px;
-    border-radius: var(--radius); border: 1px solid transparent;
-    margin-bottom: 3px; transition: all 0.2s; cursor: pointer; position: relative;
-  }
-  .ayat-card:hover { background: var(--bg-card); border-color: var(--border-dim); }
-  .ayat-card.active { background: var(--gold-subtle); border-color: var(--border); }
-  .ayat-card.playing { background: var(--gold-subtle); border-color: var(--gold-dim); }
-  .ayat-num-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
-  .ayat-num {
-    width: 34px; height: 34px; border-radius: 50%;
-    background: var(--bg-active);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; color: var(--text-sec); font-weight: 600;
-    border: 1px solid transparent; transition: all 0.2s;
-  }
-  .ayat-card.active .ayat-num, .ayat-card.playing .ayat-num {
-    background: var(--gold-glow); color: var(--gold); border-color: var(--gold-dim);
-  }
-  .btn-play-ayat {
-    width: 26px; height: 26px; border-radius: 50%;
-    background: var(--gold); border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; transition: all 0.2s; flex-shrink: 0;
-  }
-  .ayat-card:hover .btn-play-ayat { opacity: 1; }
-  .ayat-card.playing .btn-play-ayat { opacity: 1; }
-  .btn-play-ayat svg { color: #0a0a0a; }
-  .ayat-content { flex: 1; }
-  .ayat-arabic {
-    font-family: var(--font-arabic); font-size: 24px; line-height: 1.9;
-    color: var(--text-primary); text-align: right; direction: rtl; margin-bottom: 10px;
-  }
-  .ayat-card.active .ayat-arabic, .ayat-card.playing .ayat-arabic { color: var(--gold); }
-  .ayat-terjemah {
-    font-size: 13px; line-height: 1.8; color: var(--text-sec);
-    border-top: 1px solid var(--border-dim); padding-top: 8px;
-  }
-  .ayat-card.active .ayat-terjemah, .ayat-card.playing .ayat-terjemah { color: var(--text-primary); }
-  .playing-badge {
-    display: none; align-items: center; gap: 4px;
-    font-size: 10px; color: var(--gold); font-weight: 600;
-    letter-spacing: 0.06em; text-transform: uppercase; margin-top: 6px;
-  }
-  .ayat-card.playing .playing-badge { display: flex; }
-  .playing-bar { display: flex; gap: 2px; align-items: flex-end; height: 12px; }
-  .playing-bar span { width: 3px; background: var(--gold); border-radius: 1px; animation: barAnim 0.8s ease-in-out infinite alternate; }
-  .playing-bar span:nth-child(1) { height: 4px; animation-delay: 0s; }
-  .playing-bar span:nth-child(2) { height: 10px; animation-delay: 0.15s; }
-  .playing-bar span:nth-child(3) { height: 7px; animation-delay: 0.3s; }
-  @keyframes barAnim { to { transform: scaleY(0.3); } }
+/* ══ PAGE WRAPPER ══ */
+.page{position:relative;z-index:1;padding-top:var(--nav-h);}
 
-  /* ── PLAYER ── */
-  .player {
-    grid-area: player;
-    background: #161616;
-    border-top: 1px solid var(--border-dim);
-    display: flex; align-items: center; gap: 14px;
-    padding: 0 20px;
-    padding-bottom: var(--safe-bottom);
-    height: calc(var(--player-h) + var(--safe-bottom));
-  }
-  .player-info { display: flex; align-items: center; gap: 12px; width: 220px; flex-shrink: 0; }
-  .player-icon {
-    width: 44px; height: 44px; border-radius: 8px;
-    background: var(--gold-glow); border: 1px solid var(--gold-dim);
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-arabic); font-size: 18px; color: var(--gold); flex-shrink: 0;
-  }
-  .player-names { min-width: 0; }
-  .player-ayat-ar {
-    font-family: var(--font-arabic); font-size: 15px; color: var(--text-primary);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; direction: rtl;
-  }
-  .player-surah-id {
-    font-size: 11px; color: var(--text-sec); margin-top: 2px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .player-controls { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-  .ctrl-btns { display: flex; align-items: center; gap: 14px; }
-  .ctrl-btn {
-    background: none; border: none; cursor: pointer; color: var(--text-sec);
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 50%; width: 32px; height: 32px; transition: all 0.15s;
-  }
-  .ctrl-btn:hover { color: var(--text-primary); }
-  .ctrl-btn.primary { width: 40px; height: 40px; background: var(--text-primary); color: var(--bg-base); }
-  .ctrl-btn.primary:hover { background: var(--gold); transform: scale(1.04); }
-  .progress-wrap { display: flex; align-items: center; gap: 8px; width: 100%; max-width: 520px; }
-  .progress-time { font-size: 10px; color: var(--text-dim); min-width: 32px; text-align: center; }
-  .progress-track {
-    flex: 1; height: 4px; background: var(--bg-active); border-radius: 2px;
-    position: relative; cursor: pointer;
-  }
-  .progress-fill {
-    height: 100%; background: var(--text-primary); border-radius: 2px;
-    width: 0%; transition: width 0.4s linear; pointer-events: none;
-  }
-  .progress-track:hover .progress-fill { background: var(--gold); }
-  .player-right { display: flex; align-items: center; gap: 10px; width: 180px; justify-content: flex-end; flex-shrink: 0; }
-  .phase-badge {
-    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
-    text-transform: uppercase; padding: 3px 8px; border-radius: 20px; white-space: nowrap;
-  }
-  .phase-badge.arab { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid var(--gold-dim); }
-  .phase-badge.terjemah { background: rgba(88,166,255,0.1); color: #58a6ff; border: 1px solid rgba(88,166,255,0.3); }
-  .phase-badge.idle { background: var(--bg-active); color: var(--text-dim); border: 1px solid var(--border-dim); }
-  .vol-wrap { display: flex; align-items: center; gap: 6px; }
-  .vol-slider {
-    -webkit-appearance: none; width: 70px; height: 4px;
-    border-radius: 2px; background: var(--bg-active); outline: none; cursor: pointer;
-  }
-  .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--text-primary); cursor: pointer; }
+/* ══ HERO ══ */
+.hero{
+  min-height:420px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:60px 24px 48px;
+  position:relative;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--gold-dim);border:1px solid var(--border);
+  color:var(--gold);font-size:11px;font-weight:600;
+  padding:4px 14px;border-radius:20px;margin-bottom:20px;
+  letter-spacing:0.06em;text-transform:uppercase;
+}
+.hero-title{
+  font-size:clamp(36px,6vw,64px);font-weight:700;
+  color:var(--text1);line-height:1.15;margin-bottom:8px;
+}
+.hero-title span{color:var(--gold);}
+.hero-arabic{
+  font-family:var(--font-arab);
+  font-size:clamp(20px,3vw,30px);
+  color:var(--gold2);line-height:1.8;margin-bottom:16px;
+}
+.hero-desc{
+  font-size:14px;color:var(--text2);
+  max-width:480px;line-height:1.7;margin-bottom:32px;
+}
+.hero-stats{display:flex;gap:36px;flex-wrap:wrap;justify-content:center;}
+.stat-num{font-size:26px;font-weight:700;color:var(--gold);display:block;}
+.stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;}
 
-  /* ── LOADING ── */
-  .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; gap: 14px; color: var(--text-dim); }
-  .spinner { width: 28px; height: 28px; border: 2px solid var(--border-dim); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.7s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* ══ SECTION ══ */
+.section{
+  max-width:1100px;margin:0 auto;
+  padding:0 24px calc(var(--player-h) + var(--safe-b) + 40px);
+}
+.section-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:20px;flex-wrap:wrap;gap:12px;
+}
+.section-title{font-size:16px;font-weight:600;color:var(--text1);}
+.search-wrap{position:relative;width:240px;}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;}
+.search-inp{
+  width:100%;padding:8px 12px 8px 34px;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:8px;color:var(--text1);
+  font-family:var(--font);font-size:13px;outline:none;
+  transition:border-color 0.2s;
+}
+.search-inp:focus{border-color:var(--gold2);}
+.search-inp::placeholder{color:var(--text3);}
 
-  /* ── MOBILE OVERLAY SIDEBAR ── */
-  .sidebar-overlay {
-    display: none;
-    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-    z-index: 100; backdrop-filter: blur(2px);
-  }
-  .sidebar-overlay.open { display: block; }
+/* ══ SURAH GRID — 3 kolom seperti equran.id ══ */
+.surah-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
 
-  /* ── MOBILE TOPBAR ── */
-  .mobile-topbar {
-    display: none;
-    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-    background: var(--bg-panel);
-    border-bottom: 1px solid var(--border-dim);
-    padding: 12px 16px;
-    padding-top: max(12px, env(safe-area-inset-top));
-    align-items: center; gap: 12px;
-  }
-  .btn-hamburger {
-    background: none; border: none; color: var(--text-primary);
-    cursor: pointer; padding: 4px; display: flex; align-items: center;
-  }
-  .mobile-logo {
-    font-size: 16px; font-weight: 700; color: var(--gold);
-    text-decoration: none; flex: 1;
-  }
-  .mobile-logo-sub { font-size: 10px; color: var(--text-dim); display: block; letter-spacing: 0.05em; }
+/* ══ SURAH CARD — mirip equran.id ══ */
+.surah-card{
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:16px 18px;
+  cursor:pointer;
+  transition:all 0.2s;
+  display:flex;align-items:center;gap:14px;
+  position:relative;overflow:hidden;
+}
+.surah-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--gold-faint),transparent 60%);
+  opacity:0;transition:opacity 0.2s;
+}
+.surah-card:hover{border-color:var(--border);transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.surah-card:hover::after{opacity:1;}
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 768px) {
-    .app {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto 1fr calc(var(--player-h) + var(--safe-bottom));
-      grid-template-areas: "main" "player";
-      padding-top: 60px;
-    }
-    .sidebar {
-      position: fixed;
-      top: 0; left: -100%; bottom: 0;
-      width: min(85vw, 300px);
-      z-index: 200;
-      transition: left 0.3s cubic-bezier(0.4,0,0.2,1);
-      padding-top: env(safe-area-inset-top, 0);
-    }
-    .sidebar.open { left: 0; }
-    .mobile-topbar { display: flex; }
-    .main-header { padding: 14px 16px 12px; flex-wrap: wrap; }
-    .ayat-list { padding: 6px 12px 24px; }
-    .basmalah { padding: 16px 16px 4px; font-size: 22px; }
-    .ayat-arabic { font-size: 22px; }
-    .player { padding: 0 12px; padding-bottom: var(--safe-bottom); gap: 8px; }
-    .player-info { width: auto; flex: 1; min-width: 0; }
-    .player-right { display: none; }
-    .progress-wrap { max-width: 100%; }
-    .ctrl-btns { gap: 10px; }
-    .btn-play-all { padding: 8px 14px; font-size: 12px; }
-    .surah-hero-ar { font-size: 22px; }
-    .surah-hero-id { font-size: 16px; }
-  }
+/* Nomor surah dalam octagon seperti equran.id */
+.card-num-wrap{flex-shrink:0;position:relative;width:40px;height:40px;}
+.card-num-wrap svg{position:absolute;inset:0;width:100%;height:100%;}
+.card-num{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:var(--gold);
+}
+.card-body{flex:1;min-width:0;}
+.card-name-id{font-size:13px;font-weight:600;color:var(--text1);margin-bottom:2px;}
+.card-arti{font-size:11px;color:var(--text3);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-meta{
+  display:flex;align-items:center;gap:6px;
+  font-size:10px;color:var(--text3);
+}
+.card-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--text3);}
+.card-right{flex-shrink:0;text-align:right;}
+.card-name-ar{font-family:var(--font-arab);font-size:20px;color:var(--text2);line-height:1.4;}
 
-  @media (max-width: 400px) {
-    .ayat-card { gap: 10px; padding: 14px 10px; }
-    .ayat-arabic { font-size: 20px; }
-    .ayat-terjemah { font-size: 12px; }
-    .ctrl-btn { width: 28px; height: 28px; }
-    .ctrl-btn.primary { width: 36px; height: 36px; }
-  }
+/* ══ SURAH PAGE ══ */
+#pageSurah{display:none;}
+.surah-page{padding-top:var(--nav-h);min-height:100dvh;position:relative;z-index:1;}
+
+/* Surah Header */
+.surah-hdr{
+  background:linear-gradient(180deg,var(--bg2) 0%,rgba(13,17,23,0) 100%);
+  border-bottom:1px solid var(--border2);
+  padding:28px 32px 22px;
+  position:sticky;top:var(--nav-h);z-index:50;
+  backdrop-filter:blur(16px);
+}
+.surah-hdr-inner{max-width:860px;margin:0 auto;}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:none;border:none;color:var(--text2);
+  font-family:var(--font);font-size:13px;cursor:pointer;
+  padding:0;margin-bottom:16px;transition:color 0.2s;
+}
+.back-btn:hover{color:var(--gold);}
+.surah-hdr-main{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.surah-hdr-ar{font-family:var(--font-arab);font-size:32px;color:var(--gold);line-height:1.3;margin-bottom:4px;}
+.surah-hdr-name{font-size:22px;font-weight:700;color:var(--text1);margin-bottom:6px;}
+.surah-hdr-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.meta-chip{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:20px;padding:3px 10px;
+  font-size:11px;color:var(--text2);
+}
+.surah-hdr-right{display:flex;flex-direction:column;gap:10px;align-items:flex-end;}
+.qari-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;}
+.qari-sel-wrap{position:relative;}
+.qari-sel{
+  background:var(--bg3);border:1px solid var(--border2);
+  color:var(--text1);border-radius:8px;
+  padding:8px 30px 8px 12px;
+  font-family:var(--font);font-size:12px;
+  cursor:pointer;outline:none;appearance:none;
+  min-width:200px;transition:border-color 0.2s;
+}
+.qari-sel:focus{border-color:var(--gold2);}
+.qari-chev{position:absolute;right:9px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text3);}
+.btn-putar{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--gold);color:#0d1117;
+  border:none;border-radius:8px;padding:9px 20px;
+  font-family:var(--font);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all 0.2s;
+}
+.btn-putar:hover{background:#e6ba55;transform:translateY(-1px);}
+
+/* Bismillah */
+.bismillah{
+  text-align:center;padding:24px 24px 8px;
+  font-family:var(--font-arab);font-size:28px;
+  color:var(--gold2);line-height:1.8;
+  max-width:860px;margin:0 auto;
+}
+
+/* Ayat list */
+.ayat-wrap{max-width:860px;margin:0 auto;padding:0 32px calc(var(--player-h)+var(--safe-b)+40px);}
+
+.ayat-row{
+  padding:22px 0;border-bottom:1px solid var(--border2);
+  cursor:pointer;transition:background 0.15s;
+  border-radius:10px;margin:0 -12px;padding:22px 12px;
+}
+.ayat-row:hover{background:var(--bg2);}
+.ayat-row.playing{background:var(--gold-faint);}
+
+.ayat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.ayat-badge{width:36px;height:36px;position:relative;flex-shrink:0;}
+.ayat-badge svg{position:absolute;inset:0;width:100%;height:100%;}
+.ayat-badge-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold);}
+
+.ayat-ctrl{display:flex;align-items:center;gap:8px;opacity:0;transition:opacity 0.15s;}
+.ayat-row:hover .ayat-ctrl,.ayat-row.playing .ayat-ctrl{opacity:1;}
+.ayat-play{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--gold);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;
+}
+.ayat-play:hover{background:#e6ba55;transform:scale(1.08);}
+.ayat-play svg{color:#0d1117;}
+
+.ayat-arabic{
+  font-family:var(--font-arab);
+  font-size:clamp(22px,3vw,28px);
+  line-height:2;color:var(--text1);
+  text-align:right;direction:rtl;margin-bottom:14px;
+  transition:color 0.2s;
+}
+.ayat-row.playing .ayat-arabic{color:var(--gold);}
+
+.ayat-terj{
+  font-size:13px;line-height:1.85;color:var(--text2);
+  padding-top:10px;border-top:1px solid var(--border2);
+  transition:color 0.2s;
+}
+.ayat-row.playing .ayat-terj{color:var(--text1);}
+
+.playing-ind{
+  display:none;align-items:center;gap:6px;
+  margin-top:8px;font-size:10px;color:var(--gold);
+  font-weight:600;letter-spacing:0.07em;text-transform:uppercase;
+}
+.ayat-row.playing .playing-ind{display:flex;}
+.bars{display:flex;gap:2px;align-items:flex-end;height:12px;}
+.bars span{width:3px;border-radius:1px;background:var(--gold);animation:bar 0.7s ease-in-out infinite alternate;}
+.bars span:nth-child(1){height:4px;animation-delay:0s;}
+.bars span:nth-child(2){height:11px;animation-delay:0.15s;}
+.bars span:nth-child(3){height:7px;animation-delay:0.3s;}
+.bars span:nth-child(4){height:9px;animation-delay:0.08s;}
+@keyframes bar{to{transform:scaleY(0.2);}}
+
+/* ══ PLAYER BAR ══ */
+.player{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  height:calc(var(--player-h) + var(--safe-b));
+  padding-bottom:var(--safe-b);
+  background:rgba(15,20,28,0.97);
+  backdrop-filter:blur(24px);
+  border-top:1px solid var(--border2);
+  display:flex;align-items:center;
+  gap:16px;padding-left:24px;padding-right:24px;
+}
+.pl-info{display:flex;align-items:center;gap:12px;flex:0 0 220px;min-width:0;}
+.pl-thumb{
+  width:42px;height:42px;border-radius:8px;flex-shrink:0;
+  background:var(--gold-dim);border:1px solid var(--gold2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-arab);font-size:17px;color:var(--gold);
+}
+.pl-text{min-width:0;}
+.pl-ar{font-family:var(--font-arab);font-size:14px;color:var(--text1);direction:rtl;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pl-sub{font-size:11px;color:var(--text2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pl-center{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.pl-btns{display:flex;align-items:center;gap:12px;}
+.pctrl{background:none;border:none;cursor:pointer;color:var(--text2);width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all 0.15s;}
+.pctrl:hover{color:var(--text1);}
+.pctrl.big{width:38px;height:38px;background:var(--text1);color:var(--bg);border-radius:50%;}
+.pctrl.big:hover{background:var(--gold);transform:scale(1.05);}
+.pl-prog{display:flex;align-items:center;gap:8px;width:100%;max-width:480px;}
+.p-time{font-size:10px;color:var(--text3);min-width:30px;text-align:center;}
+.p-track{flex:1;height:3px;background:var(--bg4);border-radius:2px;cursor:pointer;position:relative;}
+.p-fill{height:100%;background:var(--text2);border-radius:2px;width:0%;transition:width 0.4s linear;pointer-events:none;}
+.p-track:hover .p-fill{background:var(--gold);}
+.pl-right{flex:0 0 180px;display:flex;align-items:center;justify-content:flex-end;gap:10px;}
+.phase-pill{font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;padding:3px 9px;border-radius:20px;}
+.phase-pill.arab{background:var(--gold-dim);color:var(--gold);border:1px solid var(--border);}
+.phase-pill.terjemah{background:rgba(88,166,255,0.1);color:var(--teal);border:1px solid rgba(88,166,255,0.2);}
+.phase-pill.idle{background:var(--bg3);color:var(--text3);border:1px solid var(--border2);}
+.vol-wrap{display:flex;align-items:center;gap:6px;}
+.vol-sl{-webkit-appearance:none;width:72px;height:3px;border-radius:2px;background:var(--bg4);outline:none;cursor:pointer;}
+.vol-sl::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--text2);cursor:pointer;}
+
+/* ══ FOOTER ══ */
+.footer{
+  background:var(--bg2);
+  border-top:1px solid var(--border2);
+  padding:48px 32px 32px;
+  margin-top:40px;
+  position:relative;z-index:1;
+}
+.footer-inner{max-width:1100px;margin:0 auto;}
+.footer-top{
+  display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;
+  gap:40px;margin-bottom:40px;
+}
+.footer-brand{}
+.footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.footer-logo-icon{width:34px;height:34px;border-radius:9px;background:var(--gold-dim);border:1px solid var(--gold2);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.footer-logo-name{font-size:16px;font-weight:700;color:var(--gold);}
+.footer-brand-desc{font-size:13px;color:var(--text2);line-height:1.7;max-width:280px;}
+.footer-col-title{font-size:12px;font-weight:600;color:var(--text1);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:14px;}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.footer-links a{font-size:13px;color:var(--text2);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--gold);}
+.footer-bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:24px;border-top:1px solid var(--border2);
+  flex-wrap:wrap;gap:12px;
+}
+.footer-copy{font-size:12px;color:var(--text3);}
+.footer-badges{display:flex;gap:8px;}
+.footer-badge{
+  font-size:10px;font-weight:600;
+  color:var(--text3);border:1px solid var(--border2);
+  border-radius:6px;padding:3px 8px;letter-spacing:0.05em;
+}
+
+/* ══ LOADING ══ */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:14px;color:var(--text3);}
+.spinner{width:26px;height:26px;border:2px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ══ MOBILE NAV ══ */
+.mobile-nav{
+  display:none;position:fixed;top:0;left:0;right:0;z-index:300;
+  height:56px;background:rgba(13,17,23,0.97);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);
+  align-items:center;padding:0 16px;gap:10px;
+}
+.hamburger{background:none;border:none;color:var(--text1);cursor:pointer;padding:4px;display:flex;align-items:center;}
+.mob-logo{flex:1;font-size:16px;font-weight:700;color:var(--gold);cursor:pointer;}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:900px){
+  .surah-grid{grid-template-columns:repeat(2,1fr);}
+  .footer-top{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:640px){
+  .navbar{display:none;}
+  .mobile-nav{display:flex;}
+  .page{padding-top:56px;}
+  .surah-page{padding-top:56px;}
+  .surah-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .surah-hdr{padding:16px;top:56px;}
+  .ayat-wrap{padding:0 12px calc(var(--player-h)+var(--safe-b)+40px);}
+  .bismillah{padding:16px 16px 4px;}
+  .player{padding:0 12px;gap:8px;}
+  .pl-info{flex:0 0 auto;max-width:130px;}
+  .pl-right{display:none;}
+  .footer-top{grid-template-columns:1fr;}
+  .footer{padding:32px 16px 24px;}
+  .hero{padding:40px 16px 36px;}
+  .section{padding:0 12px calc(var(--player-h)+var(--safe-b)+40px);}
+}
+@media(max-width:400px){
+  .surah-grid{grid-template-columns:1fr;}
+  .ayat-arabic{font-size:20px;}
+}
 </style>
 </head>
 <body>
-<div class="app">
 
-  <!-- MOBILE TOPBAR -->
-  <div class="mobile-topbar">
-    <button class="btn-hamburger" onclick="toggleSidebar()" aria-label="Menu surah">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-      </svg>
-    </button>
-    <a href="#" class="mobile-logo" onclick="goHome()">
-      Quran Kita
-      <span class="mobile-logo-sub">Quran Terjemah Suara</span>
-    </a>
+<!-- CANVAS BACKGROUND ANIMASI -->
+<canvas id="bgCanvas"></canvas>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="hamburger" onclick="goHome()" aria-label="Beranda">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+  </button>
+  <span class="mob-logo" onclick="goHome()">Quran Kita</span>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-logo" onclick="goHome()">
+    <div class="nav-logo-icon">☪</div>
+    <div class="nav-logo-wrap">
+      <div class="nav-logo-name">Quran Kita</div>
+      <div class="nav-logo-sub">Quran Terjemah Suara</div>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a class="nav-link active" onclick="goHome()">Beranda</a>
+    <a class="nav-link" onclick="document.getElementById('surahSection').scrollIntoView({behavior:'smooth'})">114 Surah</a>
+  </div>
+</nav>
+
+<!-- ══ HALAMAN UTAMA ══ -->
+<div id="pageHome" class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">☪ Al-Quran Digital Indonesia</div>
+    <h1 class="hero-title">Quran <span>Kita</span></h1>
+    <div class="hero-arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+    <p class="hero-desc">Baca dan dengarkan Al-Quran lengkap dengan terjemahan suara bahasa Indonesia. Audio bacaan dari Qari terbaik dunia.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">114</span><span class="stat-label">Surah</span></div>
+      <div class="stat"><span class="stat-num">6.236</span><span class="stat-label">Ayat</span></div>
+      <div class="stat"><span class="stat-num">6</span><span class="stat-label">Qari</span></div>
+      <div class="stat"><span class="stat-num">∞</span><span class="stat-label">Gratis</span></div>
+    </div>
+  </section>
+
+  <!-- SURAH SECTION -->
+  <div class="section" id="surahSection">
+    <div class="section-head">
+      <div class="section-title">Daftar Surah</div>
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-inp" type="text" id="searchInp" placeholder="Cari surah…" oninput="filterSurah()"/>
+      </div>
+    </div>
+    <div class="surah-grid" id="surahGrid">
+      <div class="loading"><div class="spinner"></div><span>Memuat…</span></div>
+    </div>
   </div>
 
-  <!-- SIDEBAR OVERLAY (mobile) -->
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <!-- FIX 1: Logo sebagai link homepage -->
-      <a href="#" class="logo-link" onclick="goHome()">
-        <div class="logo-text">
-          <div class="logo-icon">☪</div>
-          Quran Kita
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="footer-logo-icon">☪</div>
+            <span class="footer-logo-name">Quran Kita</span>
+          </div>
+          <p class="footer-brand-desc">Platform Al-Quran digital dengan terjemahan suara bahasa Indonesia. Baca, dengarkan, dan hayati firman Allah kapan saja dan di mana saja.</p>
         </div>
-        <div class="logo-sub">Quran Terjemah Suara</div>
-      </a>
-    </div>
-    <div class="sidebar-search">
-      <div class="search-box">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-        </svg>
-        <input type="text" id="searchInput" placeholder="Cari surah…" oninput="filterSurah()"/>
-      </div>
-    </div>
-    <div class="sidebar-label">Daftar Surah</div>
-    <div class="surah-list" id="surahList"></div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main" id="mainArea">
-    <div class="loading">
-      <div class="spinner"></div>
-      <span>Memuat daftar surah…</span>
-    </div>
-  </main>
-
-  <!-- PLAYER -->
-  <div class="player">
-    <div class="player-info">
-      <div class="player-icon" id="playerIcon">☪</div>
-      <div class="player-names">
-        <div class="player-ayat-ar" id="playerAyatAr">—</div>
-        <div class="player-surah-id" id="playerSurahId">Pilih surah untuk mulai</div>
-      </div>
-    </div>
-    <div class="player-controls">
-      <div class="ctrl-btns">
-        <button class="ctrl-btn" onclick="prevAyat()" title="Sebelumnya">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
-        </button>
-        <button class="ctrl-btn primary" id="btnPlayPause" onclick="togglePlay()">
-          <svg id="iconPlay" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          <svg id="iconPause" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-        </button>
-        <button class="ctrl-btn" onclick="nextAyat()" title="Berikutnya">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14 4.72 3.43L8 16.85V9.86zM16 6h2v12h-2z"/></svg>
-        </button>
-      </div>
-      <div class="progress-wrap">
-        <span class="progress-time" id="timeCur">0:00</span>
-        <div class="progress-track" onclick="seekAudio(event)">
-          <div class="progress-fill" id="progressFill"></div>
+        <div>
+          <div class="footer-col-title">Al-Quran</div>
+          <ul class="footer-links">
+            <li><a onclick="goHome()">Daftar Surah</a></li>
+            <li><a onclick="openSurah(36)">Surah Ya Sin</a></li>
+            <li><a onclick="openSurah(67)">Surah Al-Mulk</a></li>
+            <li><a onclick="openSurah(55)">Surah Ar-Rahman</a></li>
+            <li><a onclick="openSurah(1)">Surah Al-Fatihah</a></li>
+          </ul>
         </div>
-        <span class="progress-time" id="timeDur">0:00</span>
+        <div>
+          <div class="footer-col-title">Juz</div>
+          <ul class="footer-links">
+            <li><a>Juz 1 — Juz 10</a></li>
+            <li><a>Juz 11 — Juz 20</a></li>
+            <li><a>Juz 21 — Juz 30</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Tentang</div>
+          <ul class="footer-links">
+            <li><a>Tentang Quran Kita</a></li>
+            <li><a>Sumber Data</a></li>
+            <li><a>Hubungi Kami</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2025 Quran Kita — Quran Terjemah Suara. Semua hak dilindungi.</span>
+        <div class="footer-badges">
+          <span class="footer-badge">Data: Kemenag RI</span>
+          <span class="footer-badge">Audio: EveryAyah</span>
+          <span class="footer-badge">Gratis Selamanya</span>
+        </div>
       </div>
     </div>
-    <div class="player-right">
-      <span class="phase-badge idle" id="phaseBadge">Siap</span>
-      <div class="vol-wrap">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-dim)">
-          <path d="M11 5 6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
-        </svg>
-        <input type="range" class="vol-slider" id="volSlider" min="0" max="1" step="0.05" value="1" oninput="setVolume(this.value)"/>
+  </footer>
+
+</div><!-- /pageHome -->
+
+<!-- ══ HALAMAN SURAH ══ -->
+<div id="pageSurah">
+  <div class="surah-page">
+
+    <!-- STICKY HEADER -->
+    <div class="surah-hdr" id="surahHdr">
+      <div class="surah-hdr-inner">
+        <button class="back-btn" onclick="goHome()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          Kembali ke Daftar Surah
+        </button>
+        <div class="surah-hdr-main">
+          <div>
+            <div class="surah-hdr-ar" id="hdrAr">—</div>
+            <div class="surah-hdr-name" id="hdrName">—</div>
+            <div class="surah-hdr-meta" id="hdrMeta"></div>
+          </div>
+          <div class="surah-hdr-right">
+            <div>
+              <div class="qari-label">Pilih Qari</div>
+              <div class="qari-sel-wrap">
+                <select class="qari-sel" id="qariSel" onchange="onQariChange()">
+                  <option value="01">Mishary Rashid Alafasy</option>
+                  <option value="02">Abdul Basit Murattal</option>
+                  <option value="03">Mahmoud Khalil Al-Husary</option>
+                  <option value="04">Muhammad Ayyub</option>
+                  <option value="05">Saad Al-Ghamidi</option>
+                  <option value="06">Yasser Ad-Dussary</option>
+                </select>
+                <svg class="qari-chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <button class="btn-putar" onclick="playFromStart()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Putar Semua
+            </button>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <!-- BISMILLAH -->
+    <div class="bismillah" id="bismillahEl" style="display:none">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+
+    <!-- AYAT -->
+    <div class="ayat-wrap" id="ayatWrap">
+      <div class="loading"><div class="spinner"></div><span>Memuat ayat…</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ PLAYER BAR ══ -->
+<div class="player">
+  <div class="pl-info">
+    <div class="pl-thumb" id="plThumb">☪</div>
+    <div class="pl-text">
+      <div class="pl-ar" id="plAr">—</div>
+      <div class="pl-sub" id="plSub">Pilih surah untuk mulai</div>
+    </div>
+  </div>
+  <div class="pl-center">
+    <div class="pl-btns">
+      <button class="pctrl" onclick="prevAyat()" title="Sebelumnya">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+      </button>
+      <button class="pctrl big" id="btnPlay" onclick="togglePlay()">
+        <svg id="iPlay" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="iPause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      </button>
+      <button class="pctrl" onclick="nextAyat()" title="Berikutnya">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14 4.72 3.43L8 16.85V9.86zM16 6h2v12h-2z"/></svg>
+      </button>
+    </div>
+    <div class="pl-prog">
+      <span class="p-time" id="pCur">0:00</span>
+      <div class="p-track" onclick="seekAudio(event)"><div class="p-fill" id="pFill"></div></div>
+      <span class="p-time" id="pDur">0:00</span>
+    </div>
+  </div>
+  <div class="pl-right">
+    <span class="phase-pill idle" id="phasePill">Siap</span>
+    <div class="vol-wrap">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text3)"><path d="M11 5 6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      <input type="range" class="vol-sl" min="0" max="1" step="0.05" value="1" oninput="audio.volume=this.value"/>
     </div>
   </div>
 </div>
 
 <script>
-// ── DATA SURAH ──
+// ══ ANIMATED BACKGROUND CANVAS (seperti equran.id) ══
+(function(){
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function Particle(){
+    this.x = Math.random()*W;
+    this.y = Math.random()*H;
+    this.r = Math.random()*1.8+0.4;
+    this.vx = (Math.random()-0.5)*0.3;
+    this.vy = (Math.random()-0.5)*0.3;
+    this.alpha = Math.random()*0.5+0.1;
+  }
+
+  function init(){
+    resize();
+    particles = Array.from({length:120}, ()=>new Particle());
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // Gradient overlay
+    const g = ctx.createRadialGradient(W/2,0,0,W/2,0,H*0.8);
+    g.addColorStop(0,'rgba(212,168,67,0.04)');
+    g.addColorStop(1,'rgba(13,17,23,0)');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    // Particles
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(212,168,67,${p.alpha})`;
+      ctx.fill();
+    });
+    // Lines between nearby particles
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x;
+        const dy=particles[i].y-particles[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<120){
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x,particles[i].y);
+          ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`rgba(212,168,67,${0.08*(1-d/120)})`;
+          ctx.lineWidth=0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize',resize);
+  init(); draw();
+})();
+
+// ══ DATA SURAH ══
 const SURAH_DATA = [
-  [1,"Al-Fatihah","الفاتحة",7,"Makkiyyah"],
-  [2,"Al-Baqarah","البقرة",286,"Madaniyyah"],
-  [3,"Ali 'Imran","آل عمران",200,"Madaniyyah"],
-  [4,"An-Nisa","النساء",176,"Madaniyyah"],
-  [5,"Al-Ma'idah","المائدة",120,"Madaniyyah"],
-  [6,"Al-An'am","الأنعام",165,"Makkiyyah"],
-  [7,"Al-A'raf","الأعراف",206,"Makkiyyah"],
-  [8,"Al-Anfal","الأنفال",75,"Madaniyyah"],
-  [9,"At-Taubah","التوبة",129,"Madaniyyah"],
-  [10,"Yunus","يونس",109,"Makkiyyah"],
-  [11,"Hud","هود",123,"Makkiyyah"],
-  [12,"Yusuf","يوسف",111,"Makkiyyah"],
-  [13,"Ar-Ra'd","الرعد",43,"Madaniyyah"],
-  [14,"Ibrahim","إبراهيم",52,"Makkiyyah"],
-  [15,"Al-Hijr","الحجر",99,"Makkiyyah"],
-  [16,"An-Nahl","النحل",128,"Makkiyyah"],
-  [17,"Al-Isra","الإسراء",111,"Makkiyyah"],
-  [18,"Al-Kahf","الكهف",110,"Makkiyyah"],
-  [19,"Maryam","مريم",98,"Makkiyyah"],
-  [20,"Ta Ha","طه",135,"Makkiyyah"],
-  [21,"Al-Anbiya","الأنبياء",112,"Makkiyyah"],
-  [22,"Al-Hajj","الحج",78,"Madaniyyah"],
-  [23,"Al-Mu'minun","المؤمنون",118,"Makkiyyah"],
-  [24,"An-Nur","النور",64,"Madaniyyah"],
-  [25,"Al-Furqan","الفرقان",77,"Makkiyyah"],
-  [26,"Asy-Syu'ara","الشعراء",227,"Makkiyyah"],
-  [27,"An-Naml","النمل",93,"Makkiyyah"],
-  [28,"Al-Qasas","القصص",88,"Makkiyyah"],
-  [29,"Al-'Ankabut","العنكبوت",69,"Makkiyyah"],
-  [30,"Ar-Rum","الروم",60,"Makkiyyah"],
-  [31,"Luqman","لقمان",34,"Makkiyyah"],
-  [32,"As-Sajdah","السجدة",30,"Makkiyyah"],
-  [33,"Al-Ahzab","الأحزاب",73,"Madaniyyah"],
-  [34,"Saba'","سبأ",54,"Makkiyyah"],
-  [35,"Fatir","فاطر",45,"Makkiyyah"],
-  [36,"Ya Sin","يس",83,"Makkiyyah"],
-  [37,"As-Saffat","الصافات",182,"Makkiyyah"],
-  [38,"Sad","ص",88,"Makkiyyah"],
-  [39,"Az-Zumar","الزمر",75,"Makkiyyah"],
-  [40,"Gafir","غافر",85,"Makkiyyah"],
-  [41,"Fussilat","فصلت",54,"Makkiyyah"],
-  [42,"Asy-Syura","الشورى",53,"Makkiyyah"],
-  [43,"Az-Zukhruf","الزخرف",89,"Makkiyyah"],
-  [44,"Ad-Dukhan","الدخان",59,"Makkiyyah"],
-  [45,"Al-Jasiyah","الجاثية",37,"Makkiyyah"],
-  [46,"Al-Ahqaf","الأحقاف",35,"Makkiyyah"],
-  [47,"Muhammad","محمد",38,"Madaniyyah"],
-  [48,"Al-Fath","الفتح",29,"Madaniyyah"],
-  [49,"Al-Hujurat","الحجرات",18,"Madaniyyah"],
-  [50,"Qaf","ق",45,"Makkiyyah"],
-  [51,"Az-Zariyat","الذاريات",60,"Makkiyyah"],
-  [52,"At-Tur","الطور",49,"Makkiyyah"],
-  [53,"An-Najm","النجم",62,"Makkiyyah"],
-  [54,"Al-Qamar","القمر",55,"Makkiyyah"],
-  [55,"Ar-Rahman","الرحمن",78,"Madaniyyah"],
-  [56,"Al-Waqi'ah","الواقعة",96,"Makkiyyah"],
-  [57,"Al-Hadid","الحديد",29,"Madaniyyah"],
-  [58,"Al-Mujadilah","المجادلة",22,"Madaniyyah"],
-  [59,"Al-Hasyr","الحشر",24,"Madaniyyah"],
-  [60,"Al-Mumtahanah","الممتحنة",13,"Madaniyyah"],
-  [61,"As-Saf","الصف",14,"Madaniyyah"],
-  [62,"Al-Jumu'ah","الجمعة",11,"Madaniyyah"],
-  [63,"Al-Munafiqun","المنافقون",11,"Madaniyyah"],
-  [64,"At-Tagabun","التغابن",18,"Madaniyyah"],
-  [65,"At-Talaq","الطلاق",12,"Madaniyyah"],
-  [66,"At-Tahrim","التحريم",12,"Madaniyyah"],
-  [67,"Al-Mulk","الملك",30,"Makkiyyah"],
-  [68,"Al-Qalam","القلم",52,"Makkiyyah"],
-  [69,"Al-Haqqah","الحاقة",52,"Makkiyyah"],
-  [70,"Al-Ma'arij","المعارج",44,"Makkiyyah"],
-  [71,"Nuh","نوح",28,"Makkiyyah"],
-  [72,"Al-Jin","الجن",28,"Makkiyyah"],
-  [73,"Al-Muzzammil","المزمل",20,"Makkiyyah"],
-  [74,"Al-Muddassir","المدثر",56,"Makkiyyah"],
-  [75,"Al-Qiyamah","القيامة",40,"Makkiyyah"],
-  [76,"Al-Insan","الإنسان",31,"Madaniyyah"],
-  [77,"Al-Mursalat","المرسلات",50,"Makkiyyah"],
-  [78,"An-Naba","النبأ",40,"Makkiyyah"],
-  [79,"An-Nazi'at","النازعات",46,"Makkiyyah"],
-  [80,"'Abasa","عبس",42,"Makkiyyah"],
-  [81,"At-Takwir","التكوير",29,"Makkiyyah"],
-  [82,"Al-Infitar","الانفطار",19,"Makkiyyah"],
-  [83,"Al-Mutaffifin","المطففين",36,"Makkiyyah"],
-  [84,"Al-Insyiqaq","الانشقاق",25,"Makkiyyah"],
-  [85,"Al-Buruj","البروج",22,"Makkiyyah"],
-  [86,"At-Tariq","الطارق",17,"Makkiyyah"],
-  [87,"Al-A'la","الأعلى",19,"Makkiyyah"],
-  [88,"Al-Gasyiyah","الغاشية",26,"Makkiyyah"],
-  [89,"Al-Fajr","الفجر",30,"Makkiyyah"],
-  [90,"Al-Balad","البلد",20,"Makkiyyah"],
-  [91,"Asy-Syams","الشمس",15,"Makkiyyah"],
-  [92,"Al-Lail","الليل",21,"Makkiyyah"],
-  [93,"Ad-Duha","الضحى",11,"Makkiyyah"],
-  [94,"Al-Insyirah","الانشراح",8,"Makkiyyah"],
-  [95,"At-Tin","التين",8,"Makkiyyah"],
-  [96,"Al-'Alaq","العلق",19,"Makkiyyah"],
-  [97,"Al-Qadr","القدر",5,"Makkiyyah"],
-  [98,"Al-Bayyinah","البينة",8,"Madaniyyah"],
-  [99,"Az-Zalzalah","الزلزلة",8,"Madaniyyah"],
-  [100,"Al-'Adiyat","العاديات",11,"Makkiyyah"],
-  [101,"Al-Qari'ah","القارعة",11,"Makkiyyah"],
-  [102,"At-Takasur","التكاثر",8,"Makkiyyah"],
-  [103,"Al-'Asr","العصر",3,"Makkiyyah"],
-  [104,"Al-Humazah","الهمزة",9,"Makkiyyah"],
-  [105,"Al-Fil","الفيل",5,"Makkiyyah"],
-  [106,"Quraisy","قريش",4,"Makkiyyah"],
-  [107,"Al-Ma'un","الماعون",7,"Makkiyyah"],
-  [108,"Al-Kausar","الكوثر",3,"Makkiyyah"],
-  [109,"Al-Kafirun","الكافرون",6,"Makkiyyah"],
-  [110,"An-Nasr","النصر",3,"Madaniyyah"],
-  [111,"Al-Lahab","المسد",5,"Makkiyyah"],
-  [112,"Al-Ikhlas","الإخلاص",4,"Makkiyyah"],
-  [113,"Al-Falaq","الفلق",5,"Makkiyyah"],
-  [114,"An-Nas","الناس",6,"Makkiyyah"]
+  [1,"Al-Fatihah","الفاتحة",7,"Makkiyyah","Pembukaan"],
+  [2,"Al-Baqarah","البقرة",286,"Madaniyyah","Sapi Betina"],
+  [3,"Ali 'Imran","آل عمران",200,"Madaniyyah","Keluarga Imran"],
+  [4,"An-Nisa","النساء",176,"Madaniyyah","Wanita"],
+  [5,"Al-Ma'idah","المائدة",120,"Madaniyyah","Hidangan"],
+  [6,"Al-An'am","الأنعام",165,"Makkiyyah","Binatang Ternak"],
+  [7,"Al-A'raf","الأعراف",206,"Makkiyyah","Tempat Tertinggi"],
+  [8,"Al-Anfal","الأنفال",75,"Madaniyyah","Rampasan Perang"],
+  [9,"At-Taubah","التوبة",129,"Madaniyyah","Pengampunan"],
+  [10,"Yunus","يونس",109,"Makkiyyah","Nabi Yunus"],
+  [11,"Hud","هود",123,"Makkiyyah","Nabi Hud"],
+  [12,"Yusuf","يوسف",111,"Makkiyyah","Nabi Yusuf"],
+  [13,"Ar-Ra'd","الرعد",43,"Madaniyyah","Guruh"],
+  [14,"Ibrahim","إبراهيم",52,"Makkiyyah","Nabi Ibrahim"],
+  [15,"Al-Hijr","الحجر",99,"Makkiyyah","Al-Hijr"],
+  [16,"An-Nahl","النحل",128,"Makkiyyah","Lebah"],
+  [17,"Al-Isra","الإسراء",111,"Makkiyyah","Perjalanan Malam"],
+  [18,"Al-Kahf","الكهف",110,"Makkiyyah","Gua"],
+  [19,"Maryam","مريم",98,"Makkiyyah","Maryam"],
+  [20,"Ta Ha","طه",135,"Makkiyyah","Ta Ha"],
+  [21,"Al-Anbiya","الأنبياء",112,"Makkiyyah","Para Nabi"],
+  [22,"Al-Hajj","الحج",78,"Madaniyyah","Haji"],
+  [23,"Al-Mu'minun","المؤمنون",118,"Makkiyyah","Orang Beriman"],
+  [24,"An-Nur","النور",64,"Madaniyyah","Cahaya"],
+  [25,"Al-Furqan","الفرقان",77,"Makkiyyah","Pembeda"],
+  [26,"Asy-Syu'ara","الشعراء",227,"Makkiyyah","Para Penyair"],
+  [27,"An-Naml","النمل",93,"Makkiyyah","Semut"],
+  [28,"Al-Qasas","القصص",88,"Makkiyyah","Cerita"],
+  [29,"Al-'Ankabut","العنكبوت",69,"Makkiyyah","Laba-laba"],
+  [30,"Ar-Rum","الروم",60,"Makkiyyah","Bangsa Romawi"],
+  [31,"Luqman","لقمان",34,"Makkiyyah","Luqman"],
+  [32,"As-Sajdah","السجدة",30,"Makkiyyah","Sujud"],
+  [33,"Al-Ahzab","الأحزاب",73,"Madaniyyah","Golongan Bersekutu"],
+  [34,"Saba'","سبأ",54,"Makkiyyah","Kaum Saba"],
+  [35,"Fatir","فاطر",45,"Makkiyyah","Pencipta"],
+  [36,"Ya Sin","يس",83,"Makkiyyah","Ya Sin"],
+  [37,"As-Saffat","الصافات",182,"Makkiyyah","Yang Bershaf-shaf"],
+  [38,"Sad","ص",88,"Makkiyyah","Sad"],
+  [39,"Az-Zumar","الزمر",75,"Makkiyyah","Rombongan"],
+  [40,"Gafir","غافر",85,"Makkiyyah","Yang Maha Pengampun"],
+  [41,"Fussilat","فصلت",54,"Makkiyyah","Yang Dijelaskan"],
+  [42,"Asy-Syura","الشورى",53,"Makkiyyah","Musyawarah"],
+  [43,"Az-Zukhruf","الزخرف",89,"Makkiyyah","Perhiasan"],
+  [44,"Ad-Dukhan","الدخان",59,"Makkiyyah","Kabut"],
+  [45,"Al-Jasiyah","الجاثية",37,"Makkiyyah","Yang Berlutut"],
+  [46,"Al-Ahqaf","الأحقاف",35,"Makkiyyah","Bukit Pasir"],
+  [47,"Muhammad","محمد",38,"Madaniyyah","Nabi Muhammad"],
+  [48,"Al-Fath","الفتح",29,"Madaniyyah","Kemenangan"],
+  [49,"Al-Hujurat","الحجرات",18,"Madaniyyah","Kamar-kamar"],
+  [50,"Qaf","ق",45,"Makkiyyah","Qaf"],
+  [51,"Az-Zariyat","الذاريات",60,"Makkiyyah","Angin yang Menerbangkan"],
+  [52,"At-Tur","الطور",49,"Makkiyyah","Bukit Sinai"],
+  [53,"An-Najm","النجم",62,"Makkiyyah","Bintang"],
+  [54,"Al-Qamar","القمر",55,"Makkiyyah","Bulan"],
+  [55,"Ar-Rahman","الرحمن",78,"Madaniyyah","Yang Maha Pengasih"],
+  [56,"Al-Waqi'ah","الواقعة",96,"Makkiyyah","Hari Kiamat"],
+  [57,"Al-Hadid","الحديد",29,"Madaniyyah","Besi"],
+  [58,"Al-Mujadilah","المجادلة",22,"Madaniyyah","Wanita yang Mengajukan Gugatan"],
+  [59,"Al-Hasyr","الحشر",24,"Madaniyyah","Pengusiran"],
+  [60,"Al-Mumtahanah","الممتحنة",13,"Madaniyyah","Wanita yang Diuji"],
+  [61,"As-Saf","الصف",14,"Madaniyyah","Barisan"],
+  [62,"Al-Jumu'ah","الجمعة",11,"Madaniyyah","Hari Jumat"],
+  [63,"Al-Munafiqun","المنافقون",11,"Madaniyyah","Orang Munafik"],
+  [64,"At-Tagabun","التغابن",18,"Madaniyyah","Hari Ditampakkan Kesalahan"],
+  [65,"At-Talaq","الطلاق",12,"Madaniyyah","Talak"],
+  [66,"At-Tahrim","التحريم",12,"Madaniyyah","Mengharamkan"],
+  [67,"Al-Mulk","الملك",30,"Makkiyyah","Kerajaan"],
+  [68,"Al-Qalam","القلم",52,"Makkiyyah","Pena"],
+  [69,"Al-Haqqah","الحاقة",52,"Makkiyyah","Hari Kiamat"],
+  [70,"Al-Ma'arij","المعارج",44,"Makkiyyah","Tempat Naik"],
+  [71,"Nuh","نوح",28,"Makkiyyah","Nabi Nuh"],
+  [72,"Al-Jin","الجن",28,"Makkiyyah","Jin"],
+  [73,"Al-Muzzammil","المزمل",20,"Makkiyyah","Orang Berselimut"],
+  [74,"Al-Muddassir","المدثر",56,"Makkiyyah","Orang Berkemul"],
+  [75,"Al-Qiyamah","القيامة",40,"Makkiyyah","Hari Kiamat"],
+  [76,"Al-Insan","الإنسان",31,"Madaniyyah","Manusia"],
+  [77,"Al-Mursalat","المرسلات",50,"Makkiyyah","Malaikat yang Diutus"],
+  [78,"An-Naba","النبأ",40,"Makkiyyah","Berita Besar"],
+  [79,"An-Nazi'at","النازعات",46,"Makkiyyah","Malaikat yang Mencabut"],
+  [80,"'Abasa","عبس",42,"Makkiyyah","Bermuka Masam"],
+  [81,"At-Takwir","التكوير",29,"Makkiyyah","Menggulung"],
+  [82,"Al-Infitar","الانفطار",19,"Makkiyyah","Terbelah"],
+  [83,"Al-Mutaffifin","المطففين",36,"Makkiyyah","Orang yang Curang"],
+  [84,"Al-Insyiqaq","الانشقاق",25,"Makkiyyah","Terbelah"],
+  [85,"Al-Buruj","البروج",22,"Makkiyyah","Gugusan Bintang"],
+  [86,"At-Tariq","الطارق",17,"Makkiyyah","Yang Datang di Malam Hari"],
+  [87,"Al-A'la","الأعلى",19,"Makkiyyah","Yang Paling Tinggi"],
+  [88,"Al-Gasyiyah","الغاشية",26,"Makkiyyah","Hari Pembalasan"],
+  [89,"Al-Fajr","الفجر",30,"Makkiyyah","Fajar"],
+  [90,"Al-Balad","البلد",20,"Makkiyyah","Negeri"],
+  [91,"Asy-Syams","الشمس",15,"Makkiyyah","Matahari"],
+  [92,"Al-Lail","الليل",21,"Makkiyyah","Malam"],
+  [93,"Ad-Duha","الضحى",11,"Makkiyyah","Waktu Duha"],
+  [94,"Al-Insyirah","الانشراح",8,"Makkiyyah","Melapangkan"],
+  [95,"At-Tin","التين",8,"Makkiyyah","Buah Tin"],
+  [96,"Al-'Alaq","العلق",19,"Makkiyyah","Segumpal Darah"],
+  [97,"Al-Qadr","القدر",5,"Makkiyyah","Kemuliaan"],
+  [98,"Al-Bayyinah","البينة",8,"Madaniyyah","Bukti Nyata"],
+  [99,"Az-Zalzalah","الزلزلة",8,"Madaniyyah","Kegoncangan"],
+  [100,"Al-'Adiyat","العاديات",11,"Makkiyyah","Kuda Perang"],
+  [101,"Al-Qari'ah","القارعة",11,"Makkiyyah","Hari Kiamat"],
+  [102,"At-Takasur","التكاثر",8,"Makkiyyah","Bermegah-megahan"],
+  [103,"Al-'Asr","العصر",3,"Makkiyyah","Masa"],
+  [104,"Al-Humazah","الهمزة",9,"Makkiyyah","Pengumpat"],
+  [105,"Al-Fil","الفيل",5,"Makkiyyah","Gajah"],
+  [106,"Quraisy","قريش",4,"Makkiyyah","Suku Quraisy"],
+  [107,"Al-Ma'un","الماعون",7,"Makkiyyah","Barang yang Berguna"],
+  [108,"Al-Kausar","الكوثر",3,"Makkiyyah","Nikmat yang Berlimpah"],
+  [109,"Al-Kafirun","الكافرون",6,"Makkiyyah","Orang Kafir"],
+  [110,"An-Nasr","النصر",3,"Madaniyyah","Pertolongan"],
+  [111,"Al-Lahab","المسد",5,"Makkiyyah","Gejolak Api"],
+  [112,"Al-Ikhlas","الإخلاص",4,"Makkiyyah","Ikhlas"],
+  [113,"Al-Falaq","الفلق",5,"Makkiyyah","Waktu Subuh"],
+  [114,"An-Nas","الناس",6,"Makkiyyah","Manusia"]
 ];
 
-// ── STATE ──
-let currentSurahNum  = null;
-let currentAyatNum   = 0; // 0 = bismillah, 1+ = ayat
-let currentSurahData = null;
-let allAyat          = [];
-let playing          = false;
-let phase            = 'idle';
-let paused           = false;
-
-// FIX 4: Audio dengan MediaSession API agar tetap jalan di background
+// ══ STATE ══
+let currentSurahNum=null, currentSurahData=null, currentAyatNum=0;
+let allAyat=[], playing=false, paused=false, phase='idle';
 const audio = new Audio();
-audio.crossOrigin = "anonymous";
+audio.crossOrigin='anonymous';
 
-// ── URL HELPERS ──
-function pad(n, l) { return String(n).padStart(l, '0'); }
+// ══ URL HELPERS ══
+function pad(n,l){return String(n).padStart(l,'0');}
 
-// Audio Arab — everyayah.com, hanya Alafasy (terbukti bisa diputar)
-function arabURL(s, a) {
-  return `https://everyayah.com/data/Alafasy_64kbps/${pad(s,3)}${pad(a,3)}.mp3`;
+const QARI_FOLDERS={
+  '01':'Alafasy_64kbps','02':'Abdul_Basit_Murattal_64kbps',
+  '03':'Husary_64kbps','04':'Muhammad_Ayyoub_64kbps',
+  '05':'Saad_Al-Ghamidi_64kbps','06':'Yasser_Ad-Dussary_64kbps',
+};
+let selectedQari='01';
+
+function arabURL(s,a){
+  const f=QARI_FOLDERS[selectedQari]||QARI_FOLDERS['01'];
+  return `https://everyayah.com/data/${f}/${pad(s,3)}${pad(a,3)}.mp3`;
 }
-
-// Audio terjemah — dua koleksi berdasarkan nomor surah:
-// Surah 1-2 & 43-114 : koleksi lama (AlQuran-terjemahan-indonesia-tanpa-bahasa-arab)
-// Surah 3-42          : koleksi baru (quranterjemahsuara_342)
-function terjURL(s, a) {
-  if (s >= 3 && s <= 42) {
-    return `https://archive.org/download/quranterjemahsuara_342/${pad(s,3)}${pad(a,3)}.mp3`;
-  }
+function terjURL(s,a){
+  if(s>=3&&s<=42) return `https://archive.org/download/quranterjemahsuara_342/${pad(s,3)}${pad(a,3)}.mp3`;
   return `https://archive.org/download/AlQuran-terjemahan-indonesia-tanpa-bahasa-arab/${pad(s,3)}${pad(a,3)}.mp3`;
 }
+function bismillahArabURL(){return arabURL(1,1);}
+function bismillahTerjURL(){return terjURL(1,1);}
+function fmtTime(s){if(!s||isNaN(s))return'0:00';return`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;}
 
-function bismillahArabURL() { return arabURL(1, 1); }
-function bismillahTerjURL() { return terjURL(1, 1); }
+// ══ AUDIO ENGINE (token system + async/await) ══
+let _token=0;
 
-function fmtTime(sec) {
-  if (!sec || isNaN(sec)) return '0:00';
-  const m = Math.floor(sec/60), s = Math.floor(sec%60);
-  return `${m}:${s.toString().padStart(2,'0')}`;
-}
-
-// FIX 4: Media Session API untuk background playback
-function setupMediaSession() {
-  if (!('mediaSession' in navigator)) return;
-  const surah = currentSurahData;
-  if (!surah) return;
-  const ayatLabel = currentAyatNum === 0
-    ? 'Bismillah'
-    : `Ayat ${currentAyatNum}`;
-  navigator.mediaSession.metadata = new MediaMetadata({
-    title: ayatLabel,
-    artist: surah[1],
-    album: 'Quran Kita — Quran Terjemah Suara',
-  });
-  navigator.mediaSession.setActionHandler('play',          () => { audio.play(); playing = true; paused = false; updatePlayPauseBtn(); });
-  navigator.mediaSession.setActionHandler('pause',         () => { audio.pause(); paused = true; updatePlayPauseBtn(); });
-  navigator.mediaSession.setActionHandler('nexttrack',     () => nextAyat());
-  navigator.mediaSession.setActionHandler('previoustrack', () => prevAyat());
-}
-
-// ── SIDEBAR MOBILE ──
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebarOverlay').classList.toggle('open');
-}
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebarOverlay').classList.remove('open');
-}
-
-// ── HOME ──
-function goHome() {
-  stopAudio();
-  currentSurahNum = null;
-  currentSurahData = null;
-  allAyat = [];
-  document.getElementById('mainArea').innerHTML = `
-    <div class="loading" style="height:60vh;flex-direction:column;gap:20px">
-      <div style="font-family:var(--font-arabic);font-size:36px;color:var(--gold)">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-      <div style="font-size:16px;color:var(--text-sec);font-weight:500">Selamat datang di Quran Kita</div>
-      <div style="font-size:13px;color:var(--text-dim)">Pilih surah dari daftar untuk mulai membaca & mendengar</div>
-    </div>`;
-  document.querySelectorAll('.surah-item').forEach(el => el.classList.remove('active'));
-  return false;
-}
-
-// ── RENDER SIDEBAR ──
-function renderSidebar(list) {
-  document.getElementById('surahList').innerHTML = list.map(([num, nameId, nameAr, ayatCount, type]) => `
-    <div class="surah-item ${num === currentSurahNum ? 'active' : ''}" id="si-${num}"
-         onclick="loadSurahMobile(${num})">
-      <div class="surah-num">${num}</div>
-      <div class="surah-info">
-        <div class="surah-name-id">${nameId}</div>
-        <div class="surah-meta">${ayatCount} ayat · ${type}</div>
-      </div>
-      <div class="surah-name-ar">${nameAr}</div>
-    </div>`).join('');
-}
-
-function loadSurahMobile(num) {
-  closeSidebar();
-  loadSurah(num);
-}
-
-function filterSurah() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  renderSidebar(SURAH_DATA.filter(([num, nameId, nameAr]) =>
-    nameId.toLowerCase().includes(q) || nameAr.includes(q) || String(num).includes(q)));
-}
-
-// ── LOAD SURAH ──
-async function loadSurah(num) {
-  stopAudio();
-  currentSurahNum = num;
-  currentAyatNum = 0;
-  const surah = SURAH_DATA.find(s => s[0] === num);
-  currentSurahData = surah;
-
-  document.querySelectorAll('.surah-item').forEach(el => el.classList.remove('active'));
-  const siEl = document.getElementById(`si-${num}`);
-  if (siEl) siEl.classList.add('active');
-
-  document.getElementById('mainArea').innerHTML = `
-    <div class="loading"><div class="spinner"></div><span>Memuat ${surah[1]}…</span></div>`;
-
-  try {
-    const res = await fetch(`https://api.alquran.cloud/v1/surah/${num}/editions/quran-uthmani,id.indonesian`);
-    const json = await res.json();
-    const arabEdition = json.data[0];
-    const terjEdition = json.data[1];
-    allAyat = arabEdition.ayahs.map((a, i) => ({
-      num: a.numberInSurah,
-      arabic: a.text,
-      terjemah: terjEdition.ayahs[i].text
-    }));
-    renderMain(surah, allAyat);
-  } catch(e) {
-    document.getElementById('mainArea').innerHTML = `
-      <div class="loading"><span style="color:#e05c5c">Gagal memuat. Periksa koneksi internet.</span></div>`;
-  }
-}
-
-function renderMain(surah, ayat) {
-  const [num, nameId, nameAr, ayatCount, type] = surah;
-  const showBasmalah = num !== 1 && num !== 9;
-  document.getElementById('mainArea').innerHTML = `
-    <div class="main-header">
-      <div class="surah-hero">
-        <div class="surah-hero-ar">${nameAr}</div>
-        <div class="surah-hero-id">${nameId}</div>
-        <div class="surah-hero-meta">${ayatCount} Ayat · ${type} · Surah ke-${num}</div>
-      </div>
-      <button class="btn-play-all" onclick="playFromStart()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        Putar Semua
-      </button>
-    </div>
-    ${showBasmalah ? `<div class="basmalah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>` : ''}
-    <div class="ayat-list">
-      ${ayat.map(a => `
-        <div class="ayat-card" id="ayat-${a.num}" onclick="playFromAyat(${a.num})">
-          <div class="ayat-num-wrap">
-            <div class="ayat-num">${a.num}</div>
-            <button class="btn-play-ayat" title="Putar ayat ${a.num}" onclick="event.stopPropagation();playFromAyat(${a.num})">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            </button>
-          </div>
-          <div class="ayat-content">
-            <div class="ayat-arabic">${a.arabic}</div>
-            <div class="ayat-terjemah">${a.terjemah}</div>
-            <div class="playing-badge">
-              <div class="playing-bar"><span></span><span></span><span></span></div>
-              Sedang diputar
-            </div>
-          </div>
-        </div>`).join('')}
-    </div>`;
-}
-
-// ── AUDIO ENGINE ──
-// Token system: setiap sesi play baru mendapat token unik.
-// Semua callback async mengecek token — jika berubah, langsung berhenti.
-let _token = 0;
-
-function _playOne(url, tok) {
-  return new Promise(resolve => {
-    if (tok !== _token) { resolve(false); return; }
-    // Bersihkan handler lama
-    audio.onended = null;
-    audio.onerror = null;
-    // Jangan set audio.src='' — memicu onerror di mobile
+function _playOne(url,tok){
+  return new Promise(resolve=>{
+    if(tok!==_token){resolve(false);return;}
+    audio.onended=null; audio.onerror=null;
     audio.pause();
-    audio.src = url;
-    audio.onended = () => {
-      audio.onended = null; audio.onerror = null;
-      resolve(tok === _token);
-    };
-    audio.onerror = () => {
-      audio.onended = null; audio.onerror = null;
-      resolve(false); // file tidak ada / error → skip, lanjut
-    };
-    audio.play().catch(err => {
-      if (err && err.name === 'AbortError') return; // bukan error sungguhan
-      audio.onended = null; audio.onerror = null;
-      resolve(false);
+    audio.src=url;
+    audio.onended=()=>{audio.onended=null;audio.onerror=null;resolve(tok===_token);};
+    audio.onerror=()=>{audio.onended=null;audio.onerror=null;resolve(false);};
+    audio.play().catch(err=>{
+      if(err&&err.name==='AbortError')return;
+      audio.onended=null;audio.onerror=null;resolve(false);
     });
   });
 }
 
-async function _runSequence(startAyat, tok) {
-  const [surahNum,,, maxAyat] = currentSurahData;
-  const showBism = surahNum !== 1 && surahNum !== 9;
-
-  // Bismillah
-  if (showBism && startAyat === 0) {
-    currentAyatNum = 0;
-    updatePhase('arab'); updatePlayerInfoBismillah(); updatePlayPauseBtn();
-    await _playOne(bismillahArabURL(), tok);
-    if (tok !== _token) return;
-    updatePhase('terjemah'); updatePlayerInfoBismillah();
-    await _playOne(bismillahTerjURL(), tok);
-    if (tok !== _token) return;
-    startAyat = 1;
-  } else if (startAyat === 0) {
-    startAyat = 1;
-  }
-
-  // Loop per ayat
-  for (let n = startAyat; n <= maxAyat; n++) {
-    if (tok !== _token) return;
-    currentAyatNum = n;
-
-    // Arab
+async function _runSequence(startAyat,tok){
+  const [surahNum,,,maxAyat]=currentSurahData;
+  const showBism=surahNum!==1&&surahNum!==9;
+  if(showBism&&startAyat===0){
+    currentAyatNum=0; updatePhase('arab'); updatePlayerBismillah(); updatePlayBtn();
+    await _playOne(bismillahArabURL(),tok); if(tok!==_token)return;
+    updatePhase('terjemah'); updatePlayerBismillah();
+    await _playOne(bismillahTerjURL(),tok); if(tok!==_token)return;
+    startAyat=1;
+  } else if(startAyat===0){startAyat=1;}
+  for(let n=startAyat;n<=maxAyat;n++){
+    if(tok!==_token)return;
+    currentAyatNum=n;
     updatePhase('arab'); updatePlayerUI(); setupMediaSession(); scrollToAyat(n);
-    await _playOne(arabURL(surahNum, n), tok);
-    if (tok !== _token) return;
-
-    // Terjemah (skip otomatis jika file tidak ada)
+    await _playOne(arabURL(surahNum,n),tok); if(tok!==_token)return;
     updatePhase('terjemah'); updatePlayerUI();
-    await _playOne(terjURL(surahNum, n), tok);
-    if (tok !== _token) return;
+    await _playOne(terjURL(surahNum,n),tok); if(tok!==_token)return;
   }
-
-  if (tok === _token) stopAudio();
+  if(tok===_token)stopAudio();
 }
 
-function playFromStart() {
-  if (!currentSurahData) return;
-  playing = true; paused = false;
-  _token++;
-  updatePlayPauseBtn();
-  _runSequence(0, _token);
+function playFromStart(){
+  if(!currentSurahData)return;
+  playing=true;paused=false;_token++;
+  updatePlayBtn(); _runSequence(0,_token);
+}
+function playFromAyat(n){
+  if(!currentSurahData)return;
+  currentAyatNum=n;playing=true;paused=false;_token++;
+  updatePlayBtn(); updatePlayerUI(); _runSequence(n,_token);
+}
+function stopAudio(){
+  _token++;playing=false;paused=false;phase='idle';
+  audio.onended=null;audio.onerror=null;audio.pause();
+  updatePlayBtn();updatePhase('idle');
+  document.querySelectorAll('.ayat-row').forEach(el=>el.classList.remove('playing'));
+}
+function togglePlay(){
+  if(!currentSurahData)return;
+  if(playing&&!paused){paused=true;_token++;audio.pause();updatePlayBtn();updatePhase('idle');}
+  else if(paused){paused=false;playing=true;_token++;updatePlayBtn();_runSequence(currentAyatNum||1,_token);}
+  else playFromStart();
+}
+function prevAyat(){
+  if(!currentSurahData)return;
+  const t=Math.max(1,(currentAyatNum||1)-1);
+  currentAyatNum=t;scrollToAyat(t);
+  if(playing&&!paused){_token++;_runSequence(t,_token);}else updatePlayerUI();
+}
+function nextAyat(){
+  if(!currentSurahData)return;
+  const t=Math.min(currentSurahData[3],(currentAyatNum||1)+1);
+  currentAyatNum=t;scrollToAyat(t);
+  if(playing&&!paused){_token++;_runSequence(t,_token);}else updatePlayerUI();
+}
+function onQariChange(){
+  selectedQari=document.getElementById('qariSel').value;
+  if(playing&&!paused&&currentAyatNum>0&&phase==='arab'){_token++;_runSequence(currentAyatNum,_token);}
+}
+function seekAudio(e){
+  if(!audio.duration)return;
+  const r=e.currentTarget.getBoundingClientRect();
+  audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
 }
 
-function playFromAyat(ayatNum) {
-  if (!currentSurahData) return;
-  playing = true; paused = false;
-  _token++;
-  updatePlayPauseBtn();
-  _runSequence(ayatNum, _token);
+// ══ NAVIGATE ══
+function goHome(){
+  stopAudio();
+  document.getElementById('pageHome').style.display='block';
+  document.getElementById('pageSurah').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+  currentSurahNum=null;currentSurahData=null;allAyat=[];
+}
+function openSurah(num){
+  document.getElementById('pageHome').style.display='none';
+  document.getElementById('pageSurah').style.display='block';
+  window.scrollTo({top:0,behavior:'instant'});
+  loadSurah(num);
 }
 
-function stopAudio() {
-  _token++; // batalkan semua sequence
-  playing = false; paused = false; phase = 'idle';
-  audio.onended = null; audio.onerror = null;
-  audio.pause();
-  updatePlayPauseBtn(); updatePhase('idle');
-  document.querySelectorAll('.ayat-card').forEach(el => el.classList.remove('playing','active'));
+// ══ RENDER HOME ══
+function renderGrid(list){
+  const g=document.getElementById('surahGrid');
+  if(!list.length){g.innerHTML='<div class="loading"><span>Tidak ditemukan</span></div>';return;}
+  g.innerHTML=list.map(([num,nameId,nameAr,ayat,type,arti])=>`
+    <div class="surah-card" onclick="openSurah(${num})">
+      <div class="card-num-wrap">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 2L24.5 8.5L32 7L31 15L38 19L33.5 25L36 33L28.5 33.5L26 40.5L20 37L14 40.5L11.5 33.5L4 33L6.5 25L2 19L9 15L8 7L15.5 8.5L20 2Z"
+            stroke="rgba(212,168,67,0.5)" stroke-width="1" fill="rgba(212,168,67,0.07)"/>
+        </svg>
+        <div class="card-num">${num}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name-id">${nameId}</div>
+        <div class="card-arti">${arti}</div>
+        <div class="card-meta">
+          <span>${ayat} Ayat</span>
+          <span class="card-meta-dot"></span>
+          <span>${type}</span>
+        </div>
+      </div>
+      <div class="card-right">
+        <div class="card-name-ar">${nameAr}</div>
+      </div>
+    </div>`).join('');
 }
 
-function togglePlay() {
-  if (!currentSurahData) return;
-  if (playing && !paused) {
-    // Pause: simpan posisi, hentikan sequence
-    paused = true; _token++;
-    audio.pause();
-    updatePlayPauseBtn(); updatePhase('idle');
-  } else if (paused) {
-    // Resume: mulai ulang dari ayat saat ini
-    paused = false; playing = true;
-    _token++;
-    updatePlayPauseBtn();
-    _runSequence(currentAyatNum || 1, _token);
-  } else {
-    playFromStart();
+function filterSurah(){
+  const q=document.getElementById('searchInp').value.toLowerCase();
+  renderGrid(q?SURAH_DATA.filter(([n,id,ar,,,arti])=>
+    id.toLowerCase().includes(q)||ar.includes(q)||arti.toLowerCase().includes(q)||String(n).includes(q)
+  ):SURAH_DATA);
+}
+
+// ══ LOAD SURAH ══
+async function loadSurah(num){
+  stopAudio();
+  currentSurahNum=num;
+  currentSurahData=SURAH_DATA.find(s=>s[0]===num);
+  currentAyatNum=0; allAyat=[];
+
+  const [n,nameId,nameAr,ayatCount,type,arti]=currentSurahData;
+  document.getElementById('hdrAr').textContent=nameAr;
+  document.getElementById('hdrName').textContent=nameId;
+  document.getElementById('hdrMeta').innerHTML=`
+    <span class="meta-chip">${arti}</span>
+    <span class="meta-chip">${ayatCount} Ayat</span>
+    <span class="meta-chip">${type}</span>
+    <span class="meta-chip">Surah ke-${n}</span>`;
+  document.getElementById('bismillahEl').style.display=(n!==1&&n!==9)?'block':'none';
+  document.getElementById('ayatWrap').innerHTML='<div class="loading"><div class="spinner"></div><span>Memuat ayat…</span></div>';
+
+  try{
+    const res=await fetch(`https://api.alquran.cloud/v1/surah/${num}/editions/quran-uthmani,id.indonesian`);
+    const json=await res.json();
+    const arabEd=json.data[0], terjEd=json.data[1];
+    allAyat=arabEd.ayahs.map((a,i)=>({num:a.numberInSurah,arabic:a.text,terjemah:terjEd.ayahs[i].text}));
+    renderAyat(allAyat);
+  }catch(e){
+    document.getElementById('ayatWrap').innerHTML='<div class="loading"><span style="color:#f87171">Gagal memuat. Periksa koneksi.</span></div>';
   }
 }
 
-function prevAyat() {
-  if (!currentSurahData) return;
-  const target = Math.max(1, (currentAyatNum || 1) - 1);
-  currentAyatNum = target;
-  scrollToAyat(target);
-  if (playing && !paused) { _token++; _runSequence(target, _token); }
-  else updatePlayerUI();
+function renderAyat(ayat){
+  document.getElementById('ayatWrap').innerHTML=ayat.map(a=>`
+    <div class="ayat-row" id="ayat-${a.num}" onclick="playFromAyat(${a.num})">
+      <div class="ayat-top">
+        <div class="ayat-badge">
+          <svg viewBox="0 0 36 36" fill="none">
+            <path d="M18 2L21.5 7.5L28 6L27 13L33 16.5L29 22L32 28.5L25.5 29L23 35.5L18 32L13 35.5L10.5 29L4 28.5L7 22L3 16.5L9 13L8 6L14.5 7.5L18 2Z"
+              stroke="rgba(212,168,67,0.5)" stroke-width="1" fill="rgba(212,168,67,0.07)"/>
+          </svg>
+          <div class="ayat-badge-num">${a.num}</div>
+        </div>
+        <div class="ayat-ctrl">
+          <button class="ayat-play" onclick="event.stopPropagation();playFromAyat(${a.num})" title="Putar ayat ${a.num}">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="ayat-arabic">${a.arabic}</div>
+      <div class="ayat-terj">${a.terjemah}</div>
+      <div class="playing-ind">
+        <div class="bars"><span></span><span></span><span></span><span></span></div>
+        Sedang Diputar
+      </div>
+    </div>`).join('');
 }
 
-function nextAyat() {
-  if (!currentSurahData) return;
-  const maxAyat = currentSurahData[3];
-  const target = Math.min(maxAyat, (currentAyatNum || 1) + 1);
-  currentAyatNum = target;
-  scrollToAyat(target);
-  if (playing && !paused) { _token++; _runSequence(target, _token); }
-  else updatePlayerUI();
+// ══ UI UPDATES ══
+function updatePhase(p){
+  phase=p;
+  const el=document.getElementById('phasePill');
+  el.className='phase-pill '+(p==='arab'?'arab':p==='terjemah'?'terjemah':'idle');
+  el.textContent=p==='arab'?'🕌 Arab':p==='terjemah'?'🇮🇩 Terjemahan':'Siap';
 }
-
-function scrollToAyat(num) {
-  const el = document.getElementById(`ayat-${num}`);
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+function updatePlayBtn(){
+  const on=playing&&!paused;
+  document.getElementById('iPlay').style.display=on?'none':'block';
+  document.getElementById('iPause').style.display=on?'block':'none';
 }
-
-function seekAudio(e) {
-  if (!audio.duration) return;
-  const rect = e.currentTarget.getBoundingClientRect();
-  audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+function updatePlayerBismillah(){
+  document.getElementById('plAr').textContent='بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
+  document.getElementById('plSub').textContent=(currentSurahData?currentSurahData[1]:'')+' · Bismillah';
 }
-
-function setVolume(v) { audio.volume = v; }
-
-// ── UI UPDATES ──
-function updatePlayPauseBtn() {
-  const isPlaying = playing && !paused;
-  document.getElementById('iconPlay').style.display  = isPlaying ? 'none'  : 'block';
-  document.getElementById('iconPause').style.display = isPlaying ? 'block' : 'none';
-}
-
-function updatePhase(p) {
-  phase = p;
-  const badge = document.getElementById('phaseBadge');
-  badge.className = 'phase-badge ' + (p === 'arab' ? 'arab' : p === 'terjemah' ? 'terjemah' : 'idle');
-  badge.textContent = p === 'arab' ? '🕌 Arab' : p === 'terjemah' ? '🇮🇩 Terjemahan' : 'Siap';
-}
-
-function updatePlayerInfoBismillah() {
-  document.getElementById('playerAyatAr').textContent = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
-  document.getElementById('playerSurahId').textContent = (currentSurahData ? currentSurahData[1] : '') + ' · Bismillah';
-}
-
-function updatePlayerUI() {
-  if (currentAyatNum === 0) { updatePlayerInfoBismillah(); return; }
-  document.querySelectorAll('.ayat-card').forEach(el => el.classList.remove('playing','active'));
-  const card = document.getElementById(`ayat-${currentAyatNum}`);
-  if (card) card.classList.add(playing && !paused ? 'playing' : 'active');
-  const ayat = allAyat.find(a => a.num === currentAyatNum);
-  if (ayat && currentSurahData) {
-    const ar = ayat.arabic;
-    document.getElementById('playerAyatAr').textContent = ar.length > 45 ? ar.slice(0,45)+'…' : ar;
-    document.getElementById('playerSurahId').textContent = `${currentSurahData[1]} · Ayat ${currentAyatNum}`;
+function updatePlayerUI(){
+  if(currentAyatNum===0){updatePlayerBismillah();return;}
+  document.querySelectorAll('.ayat-row').forEach(el=>el.classList.remove('playing'));
+  const card=document.getElementById(`ayat-${currentAyatNum}`);
+  if(card&&playing&&!paused)card.classList.add('playing');
+  const a=allAyat.find(x=>x.num===currentAyatNum);
+  if(a&&currentSurahData){
+    document.getElementById('plAr').textContent=a.arabic.length>40?a.arabic.slice(0,40)+'…':a.arabic;
+    document.getElementById('plSub').textContent=`${currentSurahData[1]} · Ayat ${currentAyatNum}`;
+    document.getElementById('plThumb').textContent=currentSurahData[2].charAt(0)||'☪';
   }
 }
+function setupMediaSession(){
+  if(!('mediaSession' in navigator))return;
+  const a=allAyat.find(x=>x.num===currentAyatNum);
+  navigator.mediaSession.metadata=new MediaMetadata({
+    title:a?`Ayat ${currentAyatNum}`:currentSurahData[1],
+    artist:currentSurahData[1],album:'Quran Kita — Quran Terjemah Suara'
+  });
+  navigator.mediaSession.setActionHandler('play',()=>{audio.play();playing=true;paused=false;updatePlayBtn();});
+  navigator.mediaSession.setActionHandler('pause',()=>{audio.pause();paused=true;updatePlayBtn();});
+  navigator.mediaSession.setActionHandler('nexttrack',()=>nextAyat());
+  navigator.mediaSession.setActionHandler('previoustrack',()=>prevAyat());
+}
+function scrollToAyat(num){
+  const el=document.getElementById(`ayat-${num}`);
+  if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
+}
 
-// ── PROGRESS BAR ──
-audio.addEventListener('timeupdate', () => {
-  if (!audio.duration) return;
-  document.getElementById('progressFill').style.width = (audio.currentTime / audio.duration * 100) + '%';
-  document.getElementById('timeCur').textContent = fmtTime(audio.currentTime);
-  document.getElementById('timeDur').textContent = fmtTime(audio.duration);
+audio.addEventListener('timeupdate',()=>{
+  if(!audio.duration)return;
+  document.getElementById('pFill').style.width=(audio.currentTime/audio.duration*100)+'%';
+  document.getElementById('pCur').textContent=fmtTime(audio.currentTime);
+  document.getElementById('pDur').textContent=fmtTime(audio.duration);
 });
 
-// ── FIX 4: Cegah browser pause audio saat layar mati (wake lock hint) ──
-document.addEventListener('visibilitychange', () => {
-  // Biarkan audio tetap jalan, jangan pause saat tab/app diminimize
-  if (document.hidden && playing && !paused) {
-    // Audio HTML5 native sudah handle background di sebagian besar browser
-    // MediaSession API memastikan notifikasi tetap muncul di lock screen
-  }
-});
-
-// ── INIT ──
-renderSidebar(SURAH_DATA);
-goHome();
+// ══ INIT ══
+renderGrid(SURAH_DATA);
 </script>
 </body>
 </html>
