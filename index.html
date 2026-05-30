@@ -586,22 +586,23 @@ audio.crossOrigin = "anonymous";
 // ── URL HELPERS ──
 function pad(n, l) { return String(n).padStart(l, '0'); }
 
-// FIX 5: Gunakan dua sumber dengan fallback
-// Sumber primer: archive.org (muhdayin)
-// Sumber fallback: archive.org (zip collection)
-function terjURL(s, a) {
-  return `https://archive.org/download/AlQuran-terjemahan-indonesia-tanpa-bahasa-arab/${pad(s,3)}${pad(a,3)}.mp3`;
-}
-function terjURLFallback(s, a) {
-  // Fallback: koleksi zip yang lebih lengkap
-  return `https://archive.org/download/Mp3-Al-Quran-terjemahan-per-ayat-indonesia-zip/${pad(s,3)}${pad(a,3)}.mp3`;
-}
+// Audio Arab — everyayah.com, hanya Alafasy (terbukti bisa diputar)
 function arabURL(s, a) {
   return `https://everyayah.com/data/Alafasy_64kbps/${pad(s,3)}${pad(a,3)}.mp3`;
 }
-// FIX 2: URL Bismillah = surah 1 ayat 1 (audio & terjemah)
-function bismillahArabURL()  { return arabURL(1, 1); }
-function bismillahTerjURL()  { return terjURL(1, 1); }
+
+// Audio terjemah — dua koleksi berdasarkan nomor surah:
+// Surah 1-2 & 43-114 : koleksi lama (AlQuran-terjemahan-indonesia-tanpa-bahasa-arab)
+// Surah 3-42          : koleksi baru (quranterjemahsuara_342)
+function terjURL(s, a) {
+  if (s >= 3 && s <= 42) {
+    return `https://archive.org/download/quranterjemahsuara_342/${pad(s,3)}${pad(a,3)}.mp3`;
+  }
+  return `https://archive.org/download/AlQuran-terjemahan-indonesia-tanpa-bahasa-arab/${pad(s,3)}${pad(a,3)}.mp3`;
+}
+
+function bismillahArabURL() { return arabURL(1, 1); }
+function bismillahTerjURL() { return terjURL(1, 1); }
 
 function fmtTime(sec) {
   if (!sec || isNaN(sec)) return '0:00';
@@ -749,95 +750,93 @@ function renderMain(surah, ayat) {
 }
 
 // ── AUDIO ENGINE ──
+// Token system: setiap sesi play baru mendapat token unik.
+// Semua callback async mengecek token — jika berubah, langsung berhenti.
+let _token = 0;
 
-// FIX 2: Putar bismillah dulu sebelum ayat pertama (untuk surah selain 1 & 9)
-function playFromStart() {
-  if (!currentSurahData) return;
-  const [num] = currentSurahData;
-  playing = true; paused = false;
-  updatePlayPauseBtn();
-  if (num !== 1 && num !== 9) {
-    // Putar bismillah arab lalu terjemahnya, baru mulai ayat 1
-    currentAyatNum = 0;
-    updatePlayerInfoBismillah();
-    phase = 'arab';
-    updatePhase('arab');
-    audio.src = bismillahArabURL();
-    audio.play().catch(() => playBismillahTerj());
-    audio.onended = () => { if (playing) playBismillahTerj(); };
-  } else {
-    playFromAyat(1);
-  }
+function _playOne(url, tok) {
+  return new Promise(resolve => {
+    if (tok !== _token) { resolve(false); return; }
+    // Bersihkan handler lama
+    audio.onended = null;
+    audio.onerror = null;
+    // Jangan set audio.src='' — memicu onerror di mobile
+    audio.pause();
+    audio.src = url;
+    audio.onended = () => {
+      audio.onended = null; audio.onerror = null;
+      resolve(tok === _token);
+    };
+    audio.onerror = () => {
+      audio.onended = null; audio.onerror = null;
+      resolve(false); // file tidak ada / error → skip, lanjut
+    };
+    audio.play().catch(err => {
+      if (err && err.name === 'AbortError') return; // bukan error sungguhan
+      audio.onended = null; audio.onerror = null;
+      resolve(false);
+    });
+  });
 }
 
-function playBismillahTerj() {
-  phase = 'terjemah';
-  updatePhase('terjemah');
-  audio.src = bismillahTerjURL();
-  audio.play().catch(() => { currentAyatNum = 1; playArab(); });
-  audio.onended = () => { if (playing) { currentAyatNum = 1; playArab(); } };
+async function _runSequence(startAyat, tok) {
+  const [surahNum,,, maxAyat] = currentSurahData;
+  const showBism = surahNum !== 1 && surahNum !== 9;
+
+  // Bismillah
+  if (showBism && startAyat === 0) {
+    currentAyatNum = 0;
+    updatePhase('arab'); updatePlayerInfoBismillah(); updatePlayPauseBtn();
+    await _playOne(bismillahArabURL(), tok);
+    if (tok !== _token) return;
+    updatePhase('terjemah'); updatePlayerInfoBismillah();
+    await _playOne(bismillahTerjURL(), tok);
+    if (tok !== _token) return;
+    startAyat = 1;
+  } else if (startAyat === 0) {
+    startAyat = 1;
+  }
+
+  // Loop per ayat
+  for (let n = startAyat; n <= maxAyat; n++) {
+    if (tok !== _token) return;
+    currentAyatNum = n;
+
+    // Arab
+    updatePhase('arab'); updatePlayerUI(); setupMediaSession(); scrollToAyat(n);
+    await _playOne(arabURL(surahNum, n), tok);
+    if (tok !== _token) return;
+
+    // Terjemah (skip otomatis jika file tidak ada)
+    updatePhase('terjemah'); updatePlayerUI();
+    await _playOne(terjURL(surahNum, n), tok);
+    if (tok !== _token) return;
+  }
+
+  if (tok === _token) stopAudio();
+}
+
+function playFromStart() {
+  if (!currentSurahData) return;
+  playing = true; paused = false;
+  _token++;
+  updatePlayPauseBtn();
+  _runSequence(0, _token);
 }
 
 function playFromAyat(ayatNum) {
   if (!currentSurahData) return;
-  currentAyatNum = ayatNum;
   playing = true; paused = false;
+  _token++;
   updatePlayPauseBtn();
-  updatePlayerUI();
-  playArab();
-}
-
-function playArab() {
-  phase = 'arab';
-  updatePhase('arab');
-  updatePlayerUI();
-  setupMediaSession();
-  audio.src = arabURL(currentSurahNum, currentAyatNum);
-  audio.play().catch(() => playTerjemah());
-  audio.onended = () => { if (playing && !paused) playTerjemah(); };
-}
-
-// FIX 5: Coba sumber utama dulu, jika error coba fallback
-function playTerjemah() {
-  phase = 'terjemah';
-  updatePhase('terjemah');
-  updatePlayerUI();
-  setupMediaSession();
-
-  const primary  = terjURL(currentSurahNum, currentAyatNum);
-  const fallback = terjURLFallback(currentSurahNum, currentAyatNum);
-
-  audio.src = primary;
-  audio.play().catch(() => {
-    // Coba fallback
-    audio.src = fallback;
-    audio.play().catch(() => nextAyatAuto());
-  });
-
-  audio.onerror = () => {
-    if (audio.src === primary) {
-      audio.src = fallback;
-      audio.play().catch(() => nextAyatAuto());
-    } else {
-      nextAyatAuto();
-    }
-  };
-  audio.onended = () => { if (playing && !paused) nextAyatAuto(); };
-}
-
-function nextAyatAuto() {
-  if (!playing || paused) return;
-  const maxAyat = currentSurahData[3];
-  if (currentAyatNum >= maxAyat) { stopAudio(); return; }
-  currentAyatNum++;
-  scrollToAyat(currentAyatNum);
-  playArab();
+  _runSequence(ayatNum, _token);
 }
 
 function stopAudio() {
+  _token++; // batalkan semua sequence
   playing = false; paused = false; phase = 'idle';
-  audio.pause(); audio.src = '';
-  audio.onerror = null; audio.onended = null;
+  audio.onended = null; audio.onerror = null;
+  audio.pause();
   updatePlayPauseBtn(); updatePhase('idle');
   document.querySelectorAll('.ayat-card').forEach(el => el.classList.remove('playing','active'));
 }
@@ -845,12 +844,16 @@ function stopAudio() {
 function togglePlay() {
   if (!currentSurahData) return;
   if (playing && !paused) {
-    paused = true; audio.pause();
+    // Pause: simpan posisi, hentikan sequence
+    paused = true; _token++;
+    audio.pause();
     updatePlayPauseBtn(); updatePhase('idle');
   } else if (paused) {
+    // Resume: mulai ulang dari ayat saat ini
     paused = false; playing = true;
-    audio.play().catch(() => {});
-    updatePlayPauseBtn(); updatePhase(phase);
+    _token++;
+    updatePlayPauseBtn();
+    _runSequence(currentAyatNum || 1, _token);
   } else {
     playFromStart();
   }
@@ -858,16 +861,21 @@ function togglePlay() {
 
 function prevAyat() {
   if (!currentSurahData) return;
-  if (currentAyatNum > 1) { currentAyatNum--; scrollToAyat(currentAyatNum); }
-  else if (currentAyatNum === 1) { currentAyatNum = 0; }
-  if (playing) playArab();
+  const target = Math.max(1, (currentAyatNum || 1) - 1);
+  currentAyatNum = target;
+  scrollToAyat(target);
+  if (playing && !paused) { _token++; _runSequence(target, _token); }
+  else updatePlayerUI();
 }
 
 function nextAyat() {
   if (!currentSurahData) return;
   const maxAyat = currentSurahData[3];
-  if (currentAyatNum < maxAyat) { currentAyatNum++; scrollToAyat(currentAyatNum); }
-  if (playing) playArab();
+  const target = Math.min(maxAyat, (currentAyatNum || 1) + 1);
+  currentAyatNum = target;
+  scrollToAyat(target);
+  if (playing && !paused) { _token++; _runSequence(target, _token); }
+  else updatePlayerUI();
 }
 
 function scrollToAyat(num) {
