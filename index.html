@@ -10,7 +10,7 @@
 <title>Quran Kita — Quran Terjemah Suara</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Rakkas&display=swap" rel="stylesheet"/>
 <style>
 @font-face {
   font-family: 'OmarQuran';
@@ -51,6 +51,41 @@ body{
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 
+/* ══ LIGHT THEME ══ */
+body.light{
+  --bg:#f1f5f9;--bg2:#ffffff;--bg3:#f8fafc;--bg4:#e2e8f0;
+  --text1:#0f172a;--text2:#475569;--text3:#94a3b8;
+  --border2:rgba(0,0,0,0.1);--border:rgba(212,168,67,0.4);
+  --gold-faint:rgba(212,168,67,0.08);
+  background:#f1f5f9!important;
+}
+body.light #cosmicCanvas{display:none;}
+body.light .navbar{background:rgba(241,245,249,0.95)!important;}
+body.light .mobile-nav{background:rgba(241,245,249,0.97)!important;}
+body.light .player{background:rgba(226,232,240,0.98)!important;}
+body.light .surah-card{background:#fff;border-color:rgba(0,0,0,0.08);}
+body.light .surah-card:hover{background:#f8fafc;border-color:var(--gold);}
+body.light .card-name-id{color:#0f172a;}
+body.light .card-arti{color:#475569;}
+body.light .search-inp{background:#fff;border-color:#cbd5e1;color:#0f172a;}
+body.light .hero-tagline{
+  font-size:clamp(16px,2.5vw,24px);
+  color:#cbd5e1;font-weight:600;
+  letter-spacing:0.12em;text-transform:uppercase;
+  margin-bottom:14px;
+}
+
+.hero-banner{box-shadow:0 8px 40px rgba(0,0,0,0.15);}
+body.light .surah-hdr{background:rgba(241,245,249,0.95);}
+body.light .ayat-row:hover{background:#f8fafc;}
+body.light .ayat-row.playing{background:rgba(212,168,67,0.08);}
+body.light .ayat-arabic{color:#1e293b;}
+body.light .ayat-terj{color:#475569;}
+body.light .footer{background:#e2e8f0;}
+body.light .section-title-big{color:#0f172a;}
+body.light .section-subtitle{color:#475569;}
+body.light .search-hint{color:#64748b;}
+
 /* ══ COSMIC CANVAS ══ */
 #cosmicCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
@@ -77,6 +112,19 @@ body{
 .nav-logo-name{font-size:17px;font-weight:700;color:var(--gold);letter-spacing:0.01em;}
 .nav-logo-sub{font-size:10px;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase;margin-top:1px;}
 .nav-right{display:flex;align-items:center;gap:10px;}
+.nav-center{
+  position:absolute;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:4px;
+}
+.nav-theme-btn{
+  display:flex;align-items:center;gap:6px;
+  background:var(--bg3);border:1px solid var(--border2);
+  color:var(--text2);padding:6px 14px;border-radius:8px;
+  font-family:var(--font);font-size:13px;cursor:pointer;
+  transition:all 0.2s;
+}
+.nav-theme-btn:hover{background:var(--gold-dim);color:var(--gold);border-color:var(--gold2);}
+
 .nav-link{
   background:none;border:none;color:var(--text2);
   font-family:var(--font);font-size:13px;cursor:pointer;
@@ -90,6 +138,13 @@ body{
 .page{position:relative;z-index:1;padding-top:var(--nav-h);}
 
 /* ══ HERO ══ */
+.hero-tagline{
+  font-size:clamp(16px,2.5vw,24px);
+  color:#cbd5e1;font-weight:600;
+  letter-spacing:0.12em;text-transform:uppercase;
+  margin-bottom:14px;
+}
+
 .hero-banner{
   width:100%;max-width:820px;
   border-radius:16px;
@@ -122,8 +177,9 @@ body{
   color:var(--gold2);line-height:1.8;margin-bottom:16px;
 }
 .hero-desc{
-  font-size:14px;color:var(--text2);
-  max-width:480px;line-height:1.7;margin-bottom:32px;
+  font-size:clamp(14px,1.8vw,18px);
+  color:#94a3b8;
+  max-width:560px;line-height:1.8;margin-bottom:32px;
 }
 .hero-stats{display:flex;gap:36px;flex-wrap:wrap;justify-content:center;}
 .stat-num{font-size:26px;font-weight:700;color:var(--gold);display:block;}
@@ -134,6 +190,35 @@ body{
   max-width:1100px;margin:0 auto;
   padding:0 24px calc(var(--player-h) + var(--safe-b) + 40px);
 }
+.section-head-big{
+  text-align:center;margin-bottom:28px;
+}
+.section-title-big{
+  font-size:clamp(22px,3vw,32px);font-weight:700;
+  color:var(--text1);margin-bottom:8px;
+}
+.section-subtitle{
+  font-size:14px;color:var(--text2);margin-bottom:20px;
+}
+.search-wrap-big{
+  position:relative;max-width:560px;margin:0 auto 8px;
+}
+.search-wrap-big svg{
+  position:absolute;left:16px;top:50%;transform:translateY(-50%);
+  color:var(--text2);pointer-events:none;
+}
+.search-inp-big{
+  width:100%;padding:14px 18px 14px 44px;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:12px;color:#e2e8f0;
+  font-family:var(--font);font-size:15px;outline:none;
+  transition:border-color 0.2s;
+}
+body.light .search-inp-big{color:#0f172a;}
+.search-inp-big:focus{border-color:var(--gold2);}
+.search-inp-big::placeholder{color:#94a3b8;}
+.search-hint{font-size:12px;color:var(--text3);margin-bottom:4px;}
+
 .section-head{
   display:flex;align-items:center;justify-content:space-between;
   margin-bottom:20px;flex-wrap:wrap;gap:12px;
@@ -161,13 +246,14 @@ body{
 /* ══ SURAH CARD — mirip equran.id ══ */
 .surah-card{
   background:var(--bg2);
-  border:2px solid var(--border2);
+  border:1px solid var(--border2);
   border-radius:var(--r);
-  padding:16px 18px;
+  padding:20px 22px;
   cursor:pointer;
   transition:all 0.2s;
-  display:flex;align-items:center;gap:14px;
+  display:flex;align-items:center;gap:16px;
   position:relative;overflow:hidden;
+  min-height:90px;
 }
 .surah-card::after{
   content:'';position:absolute;inset:0;
@@ -183,23 +269,23 @@ body{
 .surah-card:hover::after{opacity:1;}
 
 /* Nomor surah dalam octagon seperti equran.id */
-.card-num-wrap{flex-shrink:0;position:relative;width:40px;height:40px;}
+.card-num-wrap{flex-shrink:0;position:relative;width:46px;height:46px;}
 .card-num-wrap svg{position:absolute;inset:0;width:100%;height:100%;}
 .card-num{
   position:absolute;inset:0;
   display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:700;color:var(--gold);
+  font-size:12px;font-weight:700;color:var(--gold);
 }
 .card-body{flex:1;min-width:0;}
-.card-name-id{font-size:13px;font-weight:600;color:var(--text1);margin-bottom:2px;}
-.card-arti{font-size:11px;color:var(--text3);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-name-id{font-size:15px;font-weight:700;color:#ffffff;margin-bottom:4px;}
+.card-arti{font-size:12px;color:#94a3b8;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .card-meta{
   display:flex;align-items:center;gap:6px;
-  font-size:10px;color:var(--text3);
+  font-size:11px;color:#64748b;
 }
 .card-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--text3);}
 .card-right{flex-shrink:0;text-align:right;}
-.card-name-ar{font-family:var(--font-arab);font-size:20px;color:var(--text2);line-height:1.4;}
+.card-name-ar{font-family:var(--font-arab);font-size:26px;color:var(--gold);line-height:1.4;font-weight:400;}
 
 /* ══ SURAH PAGE ══ */
 #pageSurah{display:none;}
@@ -269,7 +355,6 @@ body{
   border-radius:10px;margin:0 -12px;padding:22px 12px;
 }
 .ayat-row:hover{background:var(--bg2);}
-.border:2px solid var(--border2);
 .ayat-row.playing{background:var(--gold-faint);}
 
 .ayat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
@@ -428,8 +513,15 @@ body{
   .pl-right{display:none;}
   .footer-top{grid-template-columns:1fr;}
   .footer{padding:32px 16px 24px;}
-  .hero-banner{
-  width:80%;max-width:820px;
+  .hero-tagline{
+  font-size:clamp(16px,2.5vw,24px);
+  color:#cbd5e1;font-weight:600;
+  letter-spacing:0.12em;text-transform:uppercase;
+  margin-bottom:14px;
+}
+
+.hero-banner{
+  width:100%;max-width:820px;
   border-radius:16px;
   margin-bottom:28px;
   display:block;
@@ -467,9 +559,16 @@ body{
   <div class="nav-logo" onclick="goHome()">
     <div class="nav-logo-name" style="font-size:22px;letter-spacing:0.01em;">QuranKita.id</div>
   </div>
-  <div class="nav-right">
+  <div class="nav-center">
     <a class="nav-link active" onclick="goHome()">Beranda</a>
     <a class="nav-link" onclick="document.getElementById('surahSection').scrollIntoView({behavior:'smooth'})">114 Surah</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-theme-btn" onclick="toggleTheme()" id="themeBtn" title="Ganti Theme">
+      <svg id="iconMoon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="iconSun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      Ganti Theme
+    </button>
   </div>
 </nav>
 
@@ -478,23 +577,22 @@ body{
 
   <!-- HERO -->
   <section class="hero">
-    <img src="https://raw.githubusercontent.com/qurankita/qurankita/refs/heads/main/images/banner.jpg" alt="Quran Kita — Para Qari" class="hero-banner"/>
-    <div class="hero-stats">
-      <div class="stat"><span class="stat-num">114</span><span class="stat-label">Surah</span></div>
-      <div class="stat"><span class="stat-num">6.236</span><span class="stat-label">Ayat</span></div>
-      <div class="stat"><span class="stat-num">6</span><span class="stat-label">Qari</span></div>
-      <div class="stat"><span class="stat-num">∞</span><span class="stat-label">Gratis</span></div>
-    </div>
+    <h1 class="hero-title" style="font-family:'Rakkas',serif;font-size:clamp(48px,8vw,90px);font-weight:400;color:var(--gold);margin-bottom:6px;letter-spacing:0.02em;line-height:1.1;text-shadow:0 2px 24px rgba(212,168,67,0.35);">Quran Kita</h1>
+    <div class="hero-tagline">Quran Terjemah Suara</div>
+    <p class="hero-desc" style="margin-bottom:24px;">Baca, dengarkan, dan hayati Al-Quran dengan terjemahan suara bahasa Indonesia.<br>Audio bacaan dari 6 Qari terbaik dunia.</p>
+    <img src="banner.jpg" alt="Quran Kita — Para Qari" class="hero-banner"/>
   </section>
 
   <!-- SURAH SECTION -->
   <div class="section" id="surahSection">
-    <div class="section-head">
-      <div class="section-title">Daftar Surah</div>
-      <div class="search-wrap">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input class="search-inp" type="text" id="searchInp" placeholder="Cari surah…" oninput="filterSurah()"/>
+    <div class="section-head-big">
+      <div class="section-title-big">Daftar Surah</div>
+      <div class="section-subtitle">Pilih surah untuk mulai membaca dan mendengarkan</div>
+      <div class="search-wrap-big">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-inp-big" type="text" id="searchInp" placeholder="Cari nama surat, nomor, atau arti..." oninput="filterSurah()"/>
       </div>
+      <div class="search-hint">Contoh: "Al-Fatihah", "1", atau "Pembukaan"</div>
     </div>
     <div class="surah-grid" id="surahGrid">
       <div class="loading"><div class="spinner"></div><span>Memuat…</span></div>
@@ -1120,6 +1218,21 @@ audio.addEventListener('timeupdate',()=>{
   document.getElementById('pCur').textContent=fmtTime(audio.currentTime);
   document.getElementById('pDur').textContent=fmtTime(audio.duration);
 });
+
+// ══ THEME TOGGLE ══
+function toggleTheme(){
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  document.getElementById('iconMoon').style.display = isLight ? 'none' : 'block';
+  document.getElementById('iconSun').style.display  = isLight ? 'block' : 'none';
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+}
+// Load saved theme
+if(localStorage.getItem('theme')==='light'){
+  document.body.classList.add('light');
+  document.getElementById('iconMoon').style.display='none';
+  document.getElementById('iconSun').style.display='block';
+}
 
 // ══ INIT ══
 renderGrid(SURAH_DATA);
