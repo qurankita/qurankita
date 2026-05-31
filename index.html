@@ -674,7 +674,7 @@ body{
       if(n.y < -0.4) n.y = 1.4;
       if(n.y > 1.4)  n.y = -0.4;
 
-      const pulse = 0.04 * Math.sin(tick * 0.006 + n.phase);
+      const pulse = 0.38 * Math.sin(tick * 0.006 + n.phase);
       const grd = cx.createRadialGradient(
         n.x * W, n.y * H, 0,
         n.x * W, n.y * H, n.r * Math.max(W, H)
