@@ -293,11 +293,12 @@ body.light .search-inp-big{color:#0f172a;}
 
 /* Surah Header */
 .surah-hdr{
-  background:linear-gradient(180deg,var(--bg2) 0%,rgba(13,17,23,0) 100%);
-  border-bottom:1px solid var(--border2);
-  padding:28px 32px 22px;
+  background:linear-gradient(135deg,rgba(30,41,59,0.98) 0%,rgba(20,28,48,0.98) 50%,rgba(36,24,54,0.98) 100%);
+  border-bottom:1px solid rgba(212,168,67,0.25);
+  padding:22px 32px 20px;
   position:sticky;top:var(--nav-h);z-index:50;
-  backdrop-filter:blur(16px);
+  backdrop-filter:blur(20px);
+  box-shadow:0 4px 24px rgba(0,0,0,0.3);
 }
 .surah-hdr-inner{max-width:860px;margin:0 auto;}
 .back-btn{
@@ -307,7 +308,7 @@ body.light .search-inp-big{color:#0f172a;}
   padding:0;margin-bottom:16px;transition:color 0.2s;
 }
 .back-btn:hover{color:var(--gold);}
-.surah-hdr-main{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.surah-hdr-main{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
 .surah-hdr-ar{font-family:var(--font-arab);font-size:32px;color:var(--gold);line-height:1.3;margin-bottom:4px;}
 .surah-hdr-name{font-size:22px;font-weight:700;color:var(--text1);margin-bottom:6px;}
 .surah-hdr-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
@@ -316,8 +317,9 @@ body.light .search-inp-big{color:#0f172a;}
   border-radius:20px;padding:3px 10px;
   font-size:11px;color:var(--text2);
 }
-.surah-hdr-right{display:flex;flex-direction:column;gap:10px;align-items:flex-end;}
-.qari-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;}
+.surah-hdr-right{display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
+.surah-hdr-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.qari-label{font-size:12px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.07em;white-space:nowrap;font-weight:500;}
 .qari-sel-wrap{position:relative;}
 .qari-sel{
   background:var(--bg3);border:1px solid var(--border2);
@@ -350,12 +352,21 @@ body.light .search-inp-big{color:#0f172a;}
 .ayat-wrap{max-width:860px;margin:0 auto;padding:0 32px calc(var(--player-h)+var(--safe-b)+40px);}
 
 .ayat-row{
-  padding:22px 0;border-bottom:1px solid var(--border2);
-  cursor:pointer;transition:background 0.15s;
-  border-radius:10px;margin:0 -12px;padding:22px 12px;
+  padding:22px 12px;border:1px solid transparent;
+  border-bottom:1px solid var(--border2);
+  cursor:pointer;transition:all 0.2s;
+  border-radius:10px;margin:0 -12px;
 }
-.ayat-row:hover{background:var(--bg2);}
-.ayat-row.playing{background:var(--gold-faint);}
+.ayat-row:hover{
+  background:var(--bg2);
+  border-color:var(--gold);
+  box-shadow:0 4px 20px rgba(212,168,67,0.15);
+}
+.ayat-row.playing{
+  background:var(--gold-faint);
+  border-color:var(--gold);
+  box-shadow:0 4px 20px rgba(212,168,67,0.15);
+}
 
 .ayat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .ayat-badge{width:36px;height:36px;position:relative;flex-shrink:0;}
@@ -578,9 +589,9 @@ body.light .search-inp-big{color:#0f172a;}
   <!-- HERO -->
   <section class="hero">
     <h1 class="hero-title" style="font-family:'Rakkas',serif;font-size:clamp(48px,8vw,90px);font-weight:400;color:var(--gold);margin-bottom:6px;letter-spacing:0.02em;line-height:1.1;text-shadow:0 2px 24px rgba(212,168,67,0.35);">Quran Kita</h1>
-    <div class="hero-tagline">Quran Digital dengan Terjemah Suara</div>
-    <img src="https://raw.githubusercontent.com/qurankita/qurankita/refs/heads/main/images/banner.png" class="hero-banner"/>
-    <p class="hero-desc" style="margin-bottom:28px;">Baca, dengarkan, dan hayati Al-Quran dengan terjemahan suara bahasa Indonesia. Audio bacaan dari 4 Qari terbaik dunia</p>
+    <div class="hero-tagline">Quran Terjemah Suara</div>
+    <p class="hero-desc" style="margin-bottom:24px;">Baca, dengarkan, dan hayati Al-Quran dengan terjemahan suara bahasa Indonesia.<br>Audio bacaan dari 6 Qari terbaik dunia.</p>
+    <img src="banner.jpg" alt="Quran Kita — Para Qari" class="hero-banner"/>
   </section>
 
   <!-- SURAH SECTION -->
@@ -662,25 +673,19 @@ body.light .search-inp-big{color:#0f172a;}
           Kembali ke Daftar Surah
         </button>
         <div class="surah-hdr-main">
-          <div>
-            <div class="surah-hdr-ar" id="hdrAr">—</div>
-            <div class="surah-hdr-name" id="hdrName">—</div>
-            <div class="surah-hdr-meta" id="hdrMeta"></div>
-          </div>
-          <div class="surah-hdr-right">
-            <div>
-              <div class="qari-label">Pilih Qari</div>
-              <div class="qari-sel-wrap">
-                <select class="qari-sel" id="qariSel" onchange="onQariChange()">
-                  <option value="01">Mishary Rashid Alafasy</option>
-                  <option value="02">Abdul Basit Murattal</option>
-                  <option value="03">Mahmoud Khalil Al-Husary</option>
-                  <option value="04">Muhammad Ayyub</option>
-                  <option value="05">Saad Al-Ghamidi</option>
-                  <option value="06">Yasser Ad-Dussary</option>
-                </select>
-                <svg class="qari-chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-              </div>
+          <div class="surah-hdr-name" id="hdrName">—</div>
+          <div class="surah-hdr-row">
+            <span class="qari-label">Pilih Qari</span>
+            <div class="qari-sel-wrap">
+              <select class="qari-sel" id="qariSel" onchange="onQariChange()">
+                <option value="01">Mishary Rashid Alafasy</option>
+                <option value="02">Abdul Basit Murattal</option>
+                <option value="03">Mahmoud Khalil Al-Husary</option>
+                <option value="04">Muhammad Ayyub</option>
+                <option value="05">Saad Al-Ghamidi</option>
+                <option value="06">Yasser Ad-Dussary</option>
+              </select>
+              <svg class="qari-chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
             </div>
             <button class="btn-putar" onclick="playFromStart()">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -1120,13 +1125,7 @@ async function loadSurah(num){
   currentAyatNum=0; allAyat=[];
 
   const [n,nameId,nameAr,ayatCount,type,arti]=currentSurahData;
-  document.getElementById('hdrAr').textContent=nameAr;
   document.getElementById('hdrName').textContent=nameId;
-  document.getElementById('hdrMeta').innerHTML=`
-    <span class="meta-chip">${arti}</span>
-    <span class="meta-chip">${ayatCount} Ayat</span>
-    <span class="meta-chip">${type}</span>
-    <span class="meta-chip">Surah ke-${n}</span>`;
   document.getElementById('bismillahEl').style.display=(n!==1&&n!==9)?'block':'none';
   document.getElementById('ayatWrap').innerHTML='<div class="loading"><div class="spinner"></div><span>Memuat ayat…</span></div>';
 
