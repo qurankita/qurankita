@@ -90,6 +90,14 @@ body{
 .page{position:relative;z-index:1;padding-top:var(--nav-h);}
 
 /* ══ HERO ══ */
+.hero-banner{
+  width:100%;max-width:820px;
+  border-radius:16px;
+  margin-bottom:28px;
+  display:block;
+  box-shadow:0 8px 40px rgba(0,0,0,0.5);
+}
+
 .hero{
   min-height:420px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -166,7 +174,12 @@ body{
   background:linear-gradient(135deg,var(--gold-faint),transparent 60%);
   opacity:0;transition:opacity 0.2s;
 }
-.surah-card:hover{border-color:var(--border);transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.surah-card:hover{
+  border-color:var(--gold);
+  transform:translateY(-2px);
+  box-shadow:0 6px 24px rgba(212,168,67,0.2);
+  background:var(--bg3);
+}
 .surah-card:hover::after{opacity:1;}
 
 /* Nomor surah dalam octagon seperti equran.id */
@@ -414,7 +427,15 @@ body{
   .pl-right{display:none;}
   .footer-top{grid-template-columns:1fr;}
   .footer{padding:32px 16px 24px;}
-  .hero{padding:40px 16px 36px;}
+  .hero-banner{
+  width:80%;max-width:820px;
+  border-radius:16px;
+  margin-bottom:28px;
+  display:block;
+  box-shadow:0 8px 40px rgba(0,0,0,0.5);
+}
+
+.hero{padding:40px 16px 36px;}
   .section{padding:0 12px calc(var(--player-h)+var(--safe-b)+40px);}
 }
 @media(max-width:400px){
@@ -437,17 +458,13 @@ body{
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
     </svg>
   </button>
-  <span class="mob-logo" onclick="goHome()">Quran Kita</span>
+  <span class="mob-logo" onclick="goHome()" style="font-size:18px;font-weight:800;letter-spacing:0.01em;">QuranKita.id</span>
 </div>
 
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="nav-logo" onclick="goHome()">
-    <div class="nav-logo-icon">☪</div>
-    <div class="nav-logo-wrap">
-      <div class="nav-logo-name">Quran Kita</div>
-      <div class="nav-logo-sub">Quran Terjemah Suara</div>
-    </div>
+    <div class="nav-logo-name" style="font-size:22px;letter-spacing:0.01em;">QuranKita.id</div>
   </div>
   <div class="nav-right">
     <a class="nav-link active" onclick="goHome()">Beranda</a>
@@ -460,10 +477,7 @@ body{
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-badge">☪ Al-Quran Digital Indonesia</div>
-    <h1 class="hero-title">Quran <span>Kita</span></h1>
-    <div class="hero-arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-    <p class="hero-desc">Baca dan dengarkan Al-Quran lengkap dengan terjemahan suara bahasa Indonesia. Audio bacaan dari Qari terbaik dunia.</p>
+    <img src="banner.jpg" alt="Quran Kita — Para Qari" class="hero-banner"/>
     <div class="hero-stats">
       <div class="stat"><span class="stat-num">114</span><span class="stat-label">Surah</span></div>
       <div class="stat"><span class="stat-num">6.236</span><span class="stat-label">Ayat</span></div>
