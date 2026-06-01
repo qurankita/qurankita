@@ -1134,9 +1134,8 @@ async function loadSurah(num){
     const json=await res.json();
     const arabEd=json.data[0], terjEd=json.data[1];
     allAyat=arabEd.ayahs.map((a,i)=>({num:a.numberInSurah,arabic:a.text,terjemah:terjEd.ayahs[i].text}));
-    // Hapus bismillah dari awal ayat pertama (kecuali Al-Fatihah & At-Taubah)
-if(n!==1 && n!==9 && allAyat.length>0){
-  allAyat[0].arabic = allAyat[0].arabic.replace(/^بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ\s*/, '').trim();
+    if(n!==1 && n!==9 && allAyat.length>0){
+  allAyat[0].arabic = allAyat[0].arabic.replace(/^بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\s*/, '').trim();
 }
     renderAyat(allAyat);
   }catch(e){
