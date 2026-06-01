@@ -1133,12 +1133,33 @@ async function loadSurah(num){
     const res=await fetch(`https://api.alquran.cloud/v1/surah/${num}/editions/quran-uthmani,id.indonesian`);
     const json=await res.json();
     const arabEd=json.data[0], terjEd=json.data[1];
-
-    console.log("SURAH", num);
-    console.log("AYAT 1 ARAB:", arabEd.ayahs[0].text);
-    console.log("AYAT 1 TERJ:", terjEd.ayahs[0].text);
     
-    allAyat=arabEd.ayahs.map((a,i)=>({num:a.numberInSurah,arabic:a.text,terjemah:terjEd.ayahs[i].text}));
+    allAyat = arabEd.ayahs.map((a,i)=>{
+
+  let arabic = a.text;
+  let terjemah = terjEd.ayahs[i].text;
+
+  // Surah selain Al-Fatihah dan At-Taubah
+  if (num !== 1 && num !== 9 && a.numberInSurah === 1) {
+
+    arabic = arabic.replace(
+      /^بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ\s*/u,
+      ''
+    );
+
+    terjemah = terjemah.replace(
+      /^Dengan nama Allah Yang Maha Pengasih, Maha Penyayang\.?\s*/i,
+      ''
+    );
+  }
+
+  return {
+    num: a.numberInSurah,
+    arabic,
+    terjemah
+  };
+});
+    
     renderAyat(allAyat);
   }catch(e){
     document.getElementById('ayatWrap').innerHTML='<div class="loading"><span style="color:#f87171">Gagal memuat. Periksa koneksi.</span></div>';
