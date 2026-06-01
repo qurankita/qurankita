@@ -1135,8 +1135,10 @@ async function loadSurah(num){
     const arabEd=json.data[0], terjEd=json.data[1];
     allAyat=arabEd.ayahs.map((a,i)=>({num:a.numberInSurah,arabic:a.text,terjemah:terjEd.ayahs[i].text}));
     if(n!==1 && n!==9 && allAyat.length>0){
-  allAyat[0].arabic = allAyat[0].arabic.replace(/^بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\s*/, '').trim();
+  allAyat[0].arabic = allAyat[0].arabic.replace(/^[\u0600-\u06FF\s\u064B-\u065F]*الرَّحِيمِ\s*/, '').trim();
 }
+
+    
     renderAyat(allAyat);
   }catch(e){
     document.getElementById('ayatWrap').innerHTML='<div class="loading"><span style="color:#f87171">Gagal memuat. Periksa koneksi.</span></div>';
