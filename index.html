@@ -3,295 +3,487 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<meta name="theme-color" content="#0D1117" id="themeColor"/>
+<meta name="theme-color" content="#1C1B1F" id="themeColor"/>
 <meta name="description" content="Quran Kita — Al-Quran Digital Terjemah Suara Bahasa Indonesia"/>
 <title>QuranKita.id</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
 <style>
-/* ── Quran Fonts ── */
-@font-face{
-  font-family:'UthmanicHafs';
-  src:url('https://fonts.quran.ws/assets/fonts/uthmanic-hafs-v22.woff2') format('woff2');
-  font-display:swap;
-}
-@font-face{
-  font-family:'SurahName';
-  src:url('https://fonts.quran.ws/assets/fonts/surah-name-v4-color.ttf') format('truetype');
-  font-display:swap;
-}
-
-/* ── TOKENS — Dark (quran.com inspired) ── */
+/* ── MD3 TOKENS ── */
 :root{
-  --bg:        #0D1117;
-  --bg2:       #161B22;
-  --bg3:       #1C2333;
-  --bg4:       #21262D;
-  --surface:   #0D1117;
-  --on-surface:#E6EDF3;
-  --on-surface-v:#8B949E;
-  --primary:   #00B388;
-  --primary-c: rgba(0,179,136,0.12);
-  --primary-dim:rgba(0,179,136,0.08);
-  --on-primary:#0D1117;
-  --outline:   rgba(255,255,255,0.1);
-  --outline-v: rgba(255,255,255,0.06);
-  --gold:      #D4A843;
-  --gold-c:    rgba(212,168,67,0.1);
-  --error:     #F85149;
-  --nav-h:64px;--player-h:80px;
+  --md-sys-color-primary:#D0BCFF;
+  --md-sys-color-on-primary:#381E72;
+  --md-sys-color-primary-container:#4F378B;
+  --md-sys-color-on-primary-container:#EADDFF;
+  --md-sys-color-secondary:#CCC2DC;
+  --md-sys-color-on-secondary:#332D41;
+  --md-sys-color-surface:#141218;
+  --md-sys-color-surface-container:#1D1B20;
+  --md-sys-color-surface-container-high:#2B2930;
+  --md-sys-color-surface-container-highest:#36343B;
+  --md-sys-color-on-surface:#E6E1E5;
+  --md-sys-color-on-surface-variant:#CAC4D0;
+  --md-sys-color-outline:#938F99;
+  --md-sys-color-outline-variant:#49454F;
+  --md-sys-color-error:#F2B8B5;
+  --md-sys-color-gold:#F6C857;
+  --md-sys-color-gold-container:rgba(246,200,87,0.12);
+  --md-sys-elevation-1:0 1px 2px rgba(0,0,0,.3),0 1px 3px 1px rgba(0,0,0,.15);
+  --md-sys-elevation-2:0 1px 2px rgba(0,0,0,.3),0 2px 6px 2px rgba(0,0,0,.15);
+  --md-sys-elevation-3:0 4px 8px 3px rgba(0,0,0,.15),0 1px 3px rgba(0,0,0,.3);
+  --nav-h:64px;
+  --player-h:80px;
   --safe-b:env(safe-area-inset-bottom,0px);
   --font:'Roboto',sans-serif;
-  --font-arab:'UthmanicHafs',serif;
-  --font-surah:'SurahName',serif;
-  --r:12px;
+  --font-arab:'Noto Naskh Arabic',serif;
+  --shape-sm:8px;
+  --shape-md:12px;
+  --shape-lg:16px;
+  --shape-xl:28px;
 }
 .light{
-  --bg:#F6F8FA;--bg2:#FFFFFF;--bg3:#F0F4F8;--bg4:#E8EDF2;
-  --surface:#F6F8FA;--on-surface:#1C2433;--on-surface-v:#57606A;
-  --primary:#0A7A5F;--primary-c:rgba(10,122,95,0.1);--primary-dim:rgba(10,122,95,0.06);
-  --on-primary:#FFFFFF;
-  --outline:rgba(0,0,0,0.12);--outline-v:rgba(0,0,0,0.06);
-  --gold:#8A6200;--gold-c:rgba(138,98,0,0.1);
+  --md-sys-color-primary:#6750A4;
+  --md-sys-color-on-primary:#FFFFFF;
+  --md-sys-color-primary-container:#EADDFF;
+  --md-sys-color-on-primary-container:#21005D;
+  --md-sys-color-secondary:#625B71;
+  --md-sys-color-on-secondary:#FFFFFF;
+  --md-sys-color-surface:#FFFBFE;
+  --md-sys-color-surface-container:#F3EDF7;
+  --md-sys-color-surface-container-high:#ECE6F0;
+  --md-sys-color-surface-container-highest:#E6E0E9;
+  --md-sys-color-on-surface:#1C1B1F;
+  --md-sys-color-on-surface-variant:#49454F;
+  --md-sys-color-outline:#79747E;
+  --md-sys-color-outline-variant:#CAC4D0;
+  --md-sys-color-gold:#7B5800;
+  --md-sys-color-gold-container:rgba(123,88,0,0.08);
 }
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--on-surface);font-family:var(--font);font-size:14px;min-height:100dvh;overflow-x:hidden;transition:background .2s,color .2s;}
+body{
+  background:var(--md-sys-color-surface);
+  color:var(--md-sys-color-on-surface);
+  font-family:var(--font);font-size:14px;
+  min-height:100dvh;overflow-x:hidden;
+  transition:background .2s,color .2s;
+}
 ::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-thumb{background:var(--outline);border-radius:2px}
+::-webkit-scrollbar-thumb{background:var(--md-sys-color-outline-variant);border-radius:2px}
 
-/* ── TOP BAR ── */
+/* ── TYPOGRAPHY ── */
+.display-sm{font-size:36px;font-weight:400;line-height:44px;letter-spacing:0}
+.headline-lg{font-size:32px;font-weight:400;line-height:40px}
+.headline-md{font-size:28px;font-weight:400;line-height:36px}
+.title-lg{font-size:22px;font-weight:500;line-height:28px}
+.title-md{font-size:16px;font-weight:500;line-height:24px;letter-spacing:.15px}
+.title-sm{font-size:14px;font-weight:500;line-height:20px;letter-spacing:.1px}
+.body-lg{font-size:16px;font-weight:400;line-height:24px;letter-spacing:.5px}
+.body-md{font-size:14px;font-weight:400;line-height:20px;letter-spacing:.25px}
+.label-lg{font-size:14px;font-weight:500;line-height:20px;letter-spacing:.1px}
+.label-md{font-size:12px;font-weight:500;line-height:16px;letter-spacing:.5px}
+.label-sm{font-size:11px;font-weight:500;line-height:16px;letter-spacing:.5px}
+
+/* ── TOP APP BAR ── */
 .top-bar{
   position:fixed;top:0;left:0;right:0;z-index:100;
   height:var(--nav-h);
-  background:var(--bg2);
-  border-bottom:1px solid var(--outline);
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;gap:12px;
+  padding:0 16px;
+  background:var(--md-sys-color-surface-container);
+  border-bottom:1px solid var(--md-sys-color-outline-variant);
   transition:background .2s,box-shadow .2s;
 }
-.top-bar.scrolled{box-shadow:0 1px 12px rgba(0,0,0,.3);}
-.bar-brand{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;text-decoration:none;}
-.bar-icon{width:36px;height:36px;border-radius:10px;background:var(--primary-c);border:1px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.bar-title{font-size:18px;font-weight:700;color:var(--primary);}
-.nav-tabs{display:flex;gap:2px;}
-.nav-tab{height:36px;padding:0 16px;border-radius:20px;border:none;background:transparent;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;color:var(--on-surface-v);transition:all .15s;}
-.nav-tab:hover{background:var(--outline-v);color:var(--on-surface);}
-.nav-tab.active{background:var(--primary-c);color:var(--primary);}
-.icon-btn{width:40px;height:40px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--on-surface-v);transition:background .15s;}
-.icon-btn:hover{background:var(--outline-v);}
+.top-bar.scrolled{box-shadow:var(--md-sys-elevation-2);}
+.bar-leading{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;}
+.bar-logo{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--md-sys-color-primary-container);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+}
+.bar-title{font-size:22px;font-weight:700;color:var(--md-sys-color-primary);}
+.bar-trail{display:flex;align-items:center;gap:4px;}
+.icon-btn{
+  width:48px;height:48px;border-radius:50%;border:none;
+  background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--md-sys-color-on-surface-variant);
+  transition:background .15s;position:relative;overflow:hidden;
+}
+.icon-btn:hover{background:color-mix(in srgb,var(--md-sys-color-on-surface) 8%,transparent);}
+.icon-btn:active{background:color-mix(in srgb,var(--md-sys-color-on-surface) 12%,transparent);}
+
+/* NAV TABS */
+.nav-tabs{display:flex;align-items:center;gap:4px;}
+.nav-tab{
+  height:40px;padding:0 20px;border-radius:20px;border:none;
+  background:transparent;cursor:pointer;
+  font-family:var(--font);font-size:14px;font-weight:500;
+  color:var(--md-sys-color-on-surface-variant);
+  transition:all .15s;white-space:nowrap;
+}
+.nav-tab:hover{background:color-mix(in srgb,var(--md-sys-color-on-surface) 8%,transparent);}
+.nav-tab.active{
+  background:var(--md-sys-color-secondary-container,var(--md-sys-color-primary-container));
+  color:var(--md-sys-color-on-primary-container);
+}
 
 /* ── PAGE ── */
 .page{padding-top:var(--nav-h);}
 
 /* ── HERO ── */
 .hero{
-  padding:56px 24px 48px;text-align:center;
-  background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);
-  border-bottom:1px solid var(--outline);
+  background:linear-gradient(160deg,var(--md-sys-color-surface-container) 0%,var(--md-sys-color-surface) 100%);
+  padding:56px 24px 48px;
+  text-align:center;border-bottom:1px solid var(--md-sys-color-outline-variant);
 }
-.hero-badge{
+.hero-eyebrow{
   display:inline-flex;align-items:center;gap:6px;
-  background:var(--primary-c);color:var(--primary);
+  background:var(--md-sys-color-gold-container);
+  color:var(--md-sys-color-gold);
   border-radius:20px;padding:4px 16px;
-  font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:20px;
+  font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;
+  margin-bottom:20px;
 }
-.hero-title{font-size:clamp(40px,7vw,72px);font-weight:700;color:var(--primary);line-height:1.1;margin-bottom:8px;}
-.hero-sub{font-size:clamp(14px,2vw,17px);color:var(--on-surface-v);max-width:480px;margin:0 auto 28px;line-height:1.75;}
+.hero-title{
+  font-size:clamp(40px,7vw,72px);font-weight:700;
+  color:var(--md-sys-color-primary);
+  line-height:1.1;margin-bottom:8px;
+}
+.hero-subtitle{
+  font-size:clamp(14px,2vw,18px);
+  color:var(--md-sys-color-on-surface-variant);
+  max-width:500px;margin:0 auto 32px;line-height:1.75;
+}
 .hero-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
-.chip{height:30px;padding:0 14px;border-radius:8px;background:var(--bg3);border:1px solid var(--outline);color:var(--on-surface-v);font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:5px;}
+.chip{
+  height:32px;padding:0 16px;border-radius:8px;
+  background:var(--md-sys-color-surface-container-high);
+  border:1px solid var(--md-sys-color-outline-variant);
+  color:var(--md-sys-color-on-surface-variant);
+  font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:6px;
+}
 
 /* ── CONTENT ── */
 .content{max-width:1040px;margin:0 auto;padding:24px 16px calc(var(--player-h) + var(--safe-b) + 32px);}
-.sec-head{margin-bottom:16px;}
-.sec-head h2{font-size:18px;font-weight:600;color:var(--on-surface);}
-.sec-head p{font-size:13px;color:var(--on-surface-v);margin-top:3px;}
 
-/* Search */
-.search-field{position:relative;margin-bottom:20px;}
-.search-field svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--on-surface-v);pointer-events:none;}
-.search-input{width:100%;height:52px;padding:0 16px 0 48px;background:var(--bg2);border:1px solid var(--outline);border-radius:26px;color:var(--on-surface);font-family:var(--font);font-size:15px;outline:none;transition:border-color .15s;}
-.search-input:focus{border-color:var(--primary);}
-.search-input::placeholder{color:var(--on-surface-v);}
+/* Search bar MD3 */
+.search-field{
+  position:relative;margin-bottom:24px;
+}
+.search-field svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--md-sys-color-on-surface-variant);}
+.search-input{
+  width:100%;height:56px;padding:0 16px 0 52px;
+  background:var(--md-sys-color-surface-container-highest);
+  border:none;border-radius:28px;
+  color:var(--md-sys-color-on-surface);
+  font-family:var(--font);font-size:16px;outline:none;
+  transition:background .15s;
+}
+.search-input:focus{background:var(--md-sys-color-surface-container-high);outline:2px solid var(--md-sys-color-primary);}
+.search-input::placeholder{color:var(--md-sys-color-on-surface-variant);}
+.search-label{font-size:13px;color:var(--md-sys-color-on-surface-variant);margin-bottom:10px;padding-left:4px;}
+
+/* Section head */
+.section-head{margin-bottom:16px;}
+.section-head h2{font-size:20px;font-weight:500;color:var(--md-sys-color-on-surface);}
+.section-head p{font-size:13px;color:var(--md-sys-color-on-surface-variant);margin-top:2px;}
 
 /* ── SURAH GRID ── */
 .surah-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
 @media(max-width:800px){.surah-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:520px){.surah-grid{grid-template-columns:1fr;}}
 
-/* ── SURAH CARD ── */
+/* MD3 Card */
 .surah-card{
-  background:var(--bg2);border:1px solid var(--outline);border-radius:var(--r);
-  padding:16px;cursor:pointer;display:flex;align-items:center;gap:14px;
-  transition:all .15s;min-height:76px;
+  background:var(--md-sys-color-surface-container);
+  border-radius:var(--shape-lg);
+  padding:16px;cursor:pointer;
+  display:flex;align-items:center;gap:14px;
+  border:1px solid transparent;
+  transition:all .15s;position:relative;overflow:hidden;
+  min-height:80px;
 }
-.surah-card:hover{background:var(--bg3);border-color:var(--primary);box-shadow:0 2px 12px var(--primary-dim);}
-.card-num{width:38px;height:38px;border-radius:50%;flex-shrink:0;background:var(--primary-c);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+.surah-card:hover{
+  background:var(--md-sys-color-surface-container-high);
+  border-color:var(--md-sys-color-primary);
+  box-shadow:var(--md-sys-elevation-1);
+}
+.surah-card:active{background:var(--md-sys-color-surface-container-highest);}
+
+/* Number badge */
+.card-num{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  background:var(--md-sys-color-primary-container);
+  color:var(--md-sys-color-on-primary-container);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;
+}
 .card-body{flex:1;min-width:0;}
-.card-name{font-size:14px;font-weight:500;color:var(--on-surface);margin-bottom:2px;}
-.card-arti{font-size:12px;color:var(--on-surface-v);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.card-meta{font-size:11px;color:var(--on-surface-v);opacity:.6;margin-top:3px;}
-/* Surah name ligature font */
-.card-surah-name{font-family:var(--font-surah);font-size:32px;flex-shrink:0;line-height:1.2;direction:rtl;}
+.card-name{font-size:15px;font-weight:500;color:var(--md-sys-color-on-surface);margin-bottom:2px;}
+.card-arti{font-size:12px;color:var(--md-sys-color-on-surface-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-meta{font-size:11px;color:var(--md-sys-color-outline);margin-top:4px;}
+.card-arabic{font-family:var(--font-arab);font-size:22px;color:var(--md-sys-color-primary);flex-shrink:0;line-height:1.4;}
 
 /* ── SURAH PAGE ── */
 #pageSurah{display:none;}
 .surah-page{padding-top:var(--nav-h);min-height:100dvh;}
 
-/* Surah sticky header */
+/* Surah top bar (sticky) */
 .surah-top{
   position:sticky;top:var(--nav-h);z-index:90;
-  background:var(--bg2);border-bottom:1px solid var(--outline);
-  padding:12px 16px;backdrop-filter:blur(12px);
+  background:var(--md-sys-color-surface-container);
+  border-bottom:1px solid var(--md-sys-color-outline-variant);
+  padding:12px 16px;
 }
 .surah-top-inner{max-width:800px;margin:0 auto;}
-.back-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;color:var(--on-surface-v);font-family:var(--font);font-size:13px;padding:6px 0;transition:color .15s;margin-bottom:8px;}
-.back-btn:hover{color:var(--primary);}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:none;border:none;cursor:pointer;
+  color:var(--md-sys-color-on-surface-variant);
+  font-family:var(--font);font-size:13px;padding:8px 0;
+  transition:color .15s;margin-bottom:8px;
+}
+.back-btn:hover{color:var(--md-sys-color-primary);}
 .surah-info{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-.surah-info-left h1{font-size:19px;font-weight:600;color:var(--on-surface);}
-.surah-info-left .meta{font-size:12px;color:var(--on-surface-v);margin-top:2px;}
+.surah-info-left h1{font-size:20px;font-weight:600;color:var(--md-sys-color-on-surface);}
+.surah-info-left .meta{font-size:12px;color:var(--md-sys-color-on-surface-variant);margin-top:2px;}
 .surah-info-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 
-/* Buttons */
-.btn-primary{height:38px;padding:0 20px;border-radius:20px;border:none;cursor:pointer;background:var(--primary);color:var(--on-primary);font-family:var(--font);font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:all .15s;}
-.btn-primary:hover{opacity:.9;box-shadow:0 2px 12px var(--primary-c);}
+/* MD3 Filled tonal button */
+.btn-tonal{
+  height:40px;padding:0 24px;border-radius:20px;border:none;cursor:pointer;
+  background:var(--md-sys-color-primary-container);
+  color:var(--md-sys-color-on-primary-container);
+  font-family:var(--font);font-size:14px;font-weight:500;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:all .15s;white-space:nowrap;
+}
+.btn-tonal:hover{box-shadow:var(--md-sys-elevation-1);}
+
+/* MD3 Outlined button */
+.btn-outlined{
+  height:40px;padding:0 24px;border-radius:20px;cursor:pointer;
+  background:transparent;
+  border:1px solid var(--md-sys-color-outline);
+  color:var(--md-sys-color-primary);
+  font-family:var(--font);font-size:14px;font-weight:500;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:all .15s;white-space:nowrap;
+}
+.btn-outlined:hover{background:var(--md-sys-color-gold-container);}
+
+/* Qari select MD3 */
 .select-wrap{position:relative;}
-.qari-sel{height:38px;padding:0 32px 0 14px;border-radius:20px;background:var(--bg3);border:1px solid var(--outline);color:var(--on-surface);font-family:var(--font);font-size:13px;cursor:pointer;outline:none;appearance:none;min-width:185px;transition:border-color .15s;}
-.qari-sel:focus{border-color:var(--primary);}
-.sel-arrow{position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--on-surface-v);}
+.qari-sel{
+  height:40px;padding:0 36px 0 16px;border-radius:20px;
+  background:var(--md-sys-color-surface-container-high);
+  border:1px solid var(--md-sys-color-outline-variant);
+  color:var(--md-sys-color-on-surface);
+  font-family:var(--font);font-size:13px;cursor:pointer;
+  outline:none;appearance:none;min-width:190px;transition:border-color .15s;
+}
+.qari-sel:focus{border-color:var(--md-sys-color-primary);}
+.sel-arrow{position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--md-sys-color-on-surface-variant);}
 
 /* Bismillah */
-.bismillah{text-align:center;padding:32px 16px 4px;font-family:var(--font-arab);font-size:clamp(24px,4vw,36px);color:var(--gold);line-height:2.2;max-width:800px;margin:0 auto;}
-
-/* Ayat */
-.ayat-list{max-width:800px;margin:0 auto;padding:12px 16px calc(var(--player-h) + var(--safe-b) + 40px);}
-.ayat-row{
-  background:var(--bg2);border:1px solid var(--outline);border-radius:var(--r);
-  padding:20px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s;
+.bismillah{
+  text-align:center;padding:28px 16px 8px;
+  font-family:var(--font-arab);font-size:32px;
+  color:var(--md-sys-color-gold);line-height:1.8;
+  max-width:800px;margin:0 auto;
 }
-.ayat-row:hover{background:var(--bg3);border-color:var(--outline);}
-.ayat-row.playing{background:var(--primary-dim);border-color:var(--primary);}
+
+/* Ayat list */
+.ayat-list{max-width:800px;margin:0 auto;padding:12px 16px calc(var(--player-h) + var(--safe-b) + 40px);}
+
+.ayat-row{
+  background:var(--md-sys-color-surface-container);
+  border-radius:var(--shape-lg);
+  padding:20px 16px;margin-bottom:8px;cursor:pointer;
+  border:1px solid transparent;
+  transition:all .15s;
+}
+.ayat-row:hover{
+  background:var(--md-sys-color-surface-container-high);
+  border-color:var(--md-sys-color-outline-variant);
+}
+.ayat-row.playing{
+  background:var(--md-sys-color-gold-container);
+  border-color:var(--md-sys-color-gold);
+}
 .ayat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.ayat-num{width:34px;height:34px;border-radius:50%;background:var(--bg3);border:1px solid var(--outline);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--on-surface-v);flex-shrink:0;}
-.ayat-row.playing .ayat-num{background:var(--primary);color:var(--on-primary);border-color:transparent;}
+.ayat-num{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--md-sys-color-surface-container-high);
+  border:1px solid var(--md-sys-color-outline-variant);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:600;color:var(--md-sys-color-on-surface-variant);
+  flex-shrink:0;
+}
+.ayat-row.playing .ayat-num{
+  background:var(--md-sys-color-gold);
+  color:var(--md-sys-color-surface);
+  border-color:transparent;
+}
 .ayat-actions{display:flex;gap:4px;opacity:0;transition:opacity .15s;}
 .ayat-row:hover .ayat-actions,.ayat-row.playing .ayat-actions{opacity:1;}
-.ayat-play-btn{width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;background:var(--primary);color:var(--on-primary);display:flex;align-items:center;justify-content:center;transition:all .15s;}
-.ayat-play-btn:hover{opacity:.85;}
-
-/* Ayat Arabic — UthmanicHafs */
+.ayat-play-btn{
+  width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;
+  background:var(--md-sys-color-primary);
+  color:var(--md-sys-color-on-primary);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.ayat-play-btn:hover{box-shadow:var(--md-sys-elevation-1);}
 .ayat-arabic{
   font-family:var(--font-arab);
-  font-size:clamp(24px,3.5vw,30px);
-  line-height:2.2;
-  color:var(--on-surface);
+  font-size:clamp(22px,3vw,28px);
+  line-height:2.1;
+  color:var(--md-sys-color-on-surface);
   text-align:right;direction:rtl;margin-bottom:16px;
 }
-.ayat-row.playing .ayat-arabic{color:var(--primary);}
-.ayat-div{height:1px;background:var(--outline);margin-bottom:12px;}
-.ayat-terj{font-size:15px;line-height:1.8;color:var(--on-surface-v);}
-.ayat-row.playing .ayat-terj{color:var(--on-surface);}
+.ayat-row.playing .ayat-arabic{color:var(--md-sys-color-gold);}
+.ayat-divider{height:1px;background:var(--md-sys-color-outline-variant);margin-bottom:12px;opacity:.5;}
+.ayat-terj{font-size:15px;line-height:1.75;color:var(--md-sys-color-on-surface-variant);}
+.ayat-row.playing .ayat-terj{color:var(--md-sys-color-on-surface);}
 
 /* Playing indicator */
-.now-playing{display:none;align-items:center;gap:8px;margin-top:10px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--primary);}
+.now-playing{
+  display:none;align-items:center;gap:8px;
+  margin-top:12px;font-size:11px;font-weight:600;
+  letter-spacing:.5px;text-transform:uppercase;
+  color:var(--md-sys-color-gold);
+}
 .ayat-row.playing .now-playing{display:flex;}
 .bars{display:flex;gap:2px;align-items:flex-end;height:12px;}
-.bars span{width:3px;border-radius:2px;background:var(--primary);animation:bar .7s ease-in-out infinite alternate;}
+.bars span{width:3px;border-radius:2px;background:var(--md-sys-color-gold);animation:bar .7s ease-in-out infinite alternate;}
 .bars span:nth-child(1){height:4px;animation-delay:0s}
 .bars span:nth-child(2){height:11px;animation-delay:.15s}
 .bars span:nth-child(3){height:7px;animation-delay:.3s}
 .bars span:nth-child(4){height:9px;animation-delay:.08s}
 @keyframes bar{to{transform:scaleY(.2)}}
 
-/* ── PLAYER ── */
+/* ── PLAYER BAR ── */
 .player{
   position:fixed;bottom:0;left:0;right:0;z-index:200;
-  background:var(--bg2);border-top:1px solid var(--outline);
+  background:var(--md-sys-color-surface-container-high);
+  border-top:1px solid var(--md-sys-color-outline-variant);
   padding:0 16px;padding-bottom:var(--safe-b);
   height:calc(var(--player-h) + var(--safe-b));
   display:flex;align-items:center;gap:12px;
-  box-shadow:0 -4px 20px rgba(0,0,0,.25);
+  box-shadow:var(--md-sys-elevation-3);
 }
 .pl-info{display:flex;align-items:center;gap:12px;flex:0 0 200px;min-width:0;}
-.pl-thumb{width:42px;height:42px;border-radius:10px;flex-shrink:0;background:var(--primary-c);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--primary);}
+.pl-thumb{
+  width:44px;height:44px;border-radius:var(--shape-sm);flex-shrink:0;
+  background:var(--md-sys-color-primary-container);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-arab);font-size:18px;
+  color:var(--md-sys-color-primary);
+}
 .pl-text{min-width:0;}
-.pl-ar{font-family:var(--font-arab);font-size:13px;color:var(--on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.pl-sub{font-size:11px;color:var(--on-surface-v);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pl-ar{font-family:var(--font-arab);font-size:14px;color:var(--md-sys-color-on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pl-sub{font-size:11px;color:var(--md-sys-color-on-surface-variant);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .pl-center{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
 .pl-controls{display:flex;align-items:center;gap:4px;}
-.pctrl{width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;background:transparent;color:var(--on-surface-v);display:flex;align-items:center;justify-content:center;transition:all .15s;}
-.pctrl:hover{background:var(--outline-v);color:var(--on-surface);}
-.pctrl.play-btn{width:44px;height:44px;background:var(--primary);color:var(--on-primary);}
-.pctrl.play-btn:hover{opacity:.9;}
+.pctrl{
+  width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;
+  background:transparent;color:var(--md-sys-color-on-surface-variant);
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
+}
+.pctrl:hover{background:color-mix(in srgb,var(--md-sys-color-on-surface) 8%,transparent);}
+.pctrl.play-btn{
+  width:48px;height:48px;
+  background:var(--md-sys-color-primary);
+  color:var(--md-sys-color-on-primary);
+  border-radius:50%;
+}
+.pctrl.play-btn:hover{box-shadow:var(--md-sys-elevation-2);}
 .pl-progress{display:flex;align-items:center;gap:8px;width:100%;max-width:440px;}
-.p-time{font-size:11px;color:var(--on-surface-v);min-width:30px;text-align:center;}
-.p-track{flex:1;height:3px;border-radius:2px;background:var(--bg4);cursor:pointer;position:relative;}
-.p-fill{height:100%;background:var(--primary);border-radius:2px;width:0%;transition:width .4s linear;}
+.p-time{font-size:11px;color:var(--md-sys-color-on-surface-variant);min-width:30px;text-align:center;}
+.p-track{
+  flex:1;height:4px;border-radius:2px;
+  background:var(--md-sys-color-surface-container-highest);
+  cursor:pointer;position:relative;
+}
+.p-fill{height:100%;background:var(--md-sys-color-primary);border-radius:2px;width:0%;transition:width .4s linear;}
 .pl-right{flex:0 0 160px;display:flex;align-items:center;justify-content:flex-end;gap:8px;}
-.phase-badge{font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;}
-.phase-badge.arab{background:var(--gold-c);color:var(--gold);}
-.phase-badge.terjemah{background:var(--primary-c);color:var(--primary);}
-.phase-badge.idle{background:var(--bg3);color:var(--on-surface-v);}
+.phase-badge{
+  font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;
+  padding:4px 10px;border-radius:20px;white-space:nowrap;
+}
+.phase-badge.arab{background:var(--md-sys-color-gold-container);color:var(--md-sys-color-gold);}
+.phase-badge.terjemah{background:rgba(100,180,255,.1);color:#8AB4F8;}
+.phase-badge.idle{background:var(--md-sys-color-surface-container-highest);color:var(--md-sys-color-on-surface-variant);}
 
 /* ── LOADING ── */
-.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:240px;gap:12px;color:var(--on-surface-v);}
-.spinner{width:30px;height:30px;border:3px solid var(--outline);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:240px;gap:12px;color:var(--md-sys-color-on-surface-variant);}
+.spinner{width:32px;height:32px;border:3px solid var(--md-sys-color-outline-variant);border-top-color:var(--md-sys-color-primary);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── RESPONSIVE ── */
 @media(max-width:640px){
   .nav-tabs{display:none;}
-  .hero{padding:36px 16px 28px;}
-  .surah-top{padding:10px 12px;}
+  .hero{padding:36px 16px 32px;}
+  .hero-title{font-size:clamp(36px,10vw,60px);}
+  .surah-top{padding:10px 16px;}
   .surah-info{flex-direction:column;align-items:flex-start;}
   .surah-info-right{width:100%;}
   .qari-sel{flex:1;min-width:0;}
-  .player{gap:6px;padding:0 10px;padding-bottom:var(--safe-b);}
-  .pl-info{flex:0 0 auto;max-width:110px;}
+  .player{padding:0 10px;padding-bottom:var(--safe-b);gap:6px;}
+  .pl-info{flex:0 0 auto;max-width:120px;}
   .pl-right{display:none;}
+}
+@media(max-width:400px){
+  .surah-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 
+<!-- TOP APP BAR -->
 <header class="top-bar" id="topBar">
-  <a class="bar-brand" onclick="goHome()">
-    <div class="bar-icon">☪</div>
+  <div class="bar-leading" onclick="goHome()">
+    <div class="bar-logo">☪</div>
     <span class="bar-title">QuranKita</span>
-  </a>
-  <nav class="nav-tabs">
+  </div>
+  <nav class="nav-tabs" id="navTabs">
     <button class="nav-tab active" onclick="goHome()">Beranda</button>
     <button class="nav-tab" onclick="scrollToSurah()">114 Surah</button>
   </nav>
-  <button class="icon-btn" onclick="toggleTheme()" title="Ganti tema">
-    <svg id="iMoon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    <svg id="iSun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-  </button>
+  <div class="bar-trail">
+    <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Ganti tema" aria-label="Ganti tema">
+      <svg id="iMoon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="iSun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
 </header>
 
-<!-- HOME -->
+<!-- HOME PAGE -->
 <div id="pageHome" class="page">
   <section class="hero">
-    <div class="hero-badge">☪ Al-Quran Digital</div>
+    <div class="hero-eyebrow">☪ Al-Quran Digital</div>
     <h1 class="hero-title">Quran Kita</h1>
-    <p class="hero-sub">Baca, dengarkan, dan hayati Al-Quran dengan terjemahan suara bahasa Indonesia. Audio dari 6 Qari terbaik dunia.</p>
+    <p class="hero-subtitle">Baca, dengarkan, dan hayati Al-Quran dengan terjemahan suara bahasa Indonesia. Audio dari 6 Qari terbaik dunia.</p>
     <div class="hero-chips">
       <span class="chip">📖 114 Surah</span>
       <span class="chip">🎧 6 Qari</span>
       <span class="chip">🇮🇩 Terjemah Suara</span>
-      <span class="chip">✨ Gratis</span>
+      <span class="chip">✨ Gratis Selamanya</span>
     </div>
   </section>
 
   <div class="content" id="surahSection">
-    <div class="sec-head">
+    <div class="section-head">
       <h2>Daftar Surah</h2>
       <p>Pilih surah untuk mulai membaca dan mendengarkan</p>
     </div>
     <div class="search-field">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input class="search-input" type="search" id="searchInp" placeholder="Cari surah, nomor, atau arti…" oninput="filterSurah()" autocomplete="off"/>
     </div>
     <div class="surah-grid" id="surahGrid">
@@ -303,10 +495,10 @@ body{background:var(--bg);color:var(--on-surface);font-family:var(--font);font-s
 <!-- SURAH PAGE -->
 <div id="pageSurah">
   <div class="surah-page">
-    <div class="surah-top">
+    <div class="surah-top" id="surahTop">
       <div class="surah-top-inner">
         <button class="back-btn" onclick="goHome()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
           Daftar Surah
         </button>
         <div class="surah-info">
@@ -324,25 +516,25 @@ body{background:var(--bg);color:var(--on-surface);font-family:var(--font);font-s
                 <option value="05">Saad Al-Ghamidi</option>
                 <option value="06">Yasser Ad-Dussary</option>
               </select>
-              <svg class="sel-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              <svg class="sel-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
             </div>
-            <button class="btn-primary" onclick="playFromStart()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              Putar Semua
+            <button class="btn-tonal" onclick="playFromStart()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Putar
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="bismillah" id="bismillahEl" style="display:none">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+    <div class="bismillah" id="bismillahEl" style="display:none">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
     <div class="ayat-list" id="ayatWrap">
       <div class="loading"><div class="spinner"></div><span>Memuat ayat…</span></div>
     </div>
   </div>
 </div>
 
-<!-- PLAYER -->
+<!-- PLAYER BAR -->
 <div class="player">
   <div class="pl-info">
     <div class="pl-thumb" id="plThumb">☪</div>
@@ -373,150 +565,136 @@ body{background:var(--bg);color:var(--on-surface);font-family:var(--font);font-s
   <div class="pl-right">
     <span class="phase-badge idle" id="phasePill">Siap</span>
     <div style="display:flex;align-items:center;gap:6px;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--on-surface-v)"><path d="M11 5 6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-      <input type="range" style="width:68px;accent-color:var(--primary);cursor:pointer" min="0" max="1" step="0.05" value="1" oninput="audio.volume=this.value"/>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--md-sys-color-on-surface-variant)"><path d="M11 5 6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      <input type="range" style="width:72px;accent-color:var(--md-sys-color-primary);cursor:pointer" min="0" max="1" step="0.05" value="1" oninput="audio.volume=this.value"/>
     </div>
   </div>
 </div>
 
 <script>
-// ── SURAH NAME LIGATURE MAP ──
-// Each surah has a specific Unicode character in the SurahName font (U+FB51 range)
-// The font maps sequential codepoints starting at U+FB51 for surah 1..114
-// Characters are at codepoints FB51, FB52, FB54... (even slots = isolated form)
-// Actual mapping: surah N → codepoint FB50 + (N-1)*2 + 1 (FB51 for S1, FB53 for S2 …)
-// But color font uses specific ligature glyphs — we use the standard sequential mapping
-function surahNameChar(n){
-  // The v4 font encodes surah names as ligature glyphs.
-  // Mapping: surah 1 = U+FB51, surah 2 = U+FB53, ... step +2 each
-  // Actually font.quran.ws preview shows glyphs starting U+FB51
-  // We use direct sequential: char at FB50 + n*2 - 1
-  return String.fromCodePoint(0xFB50 + (n - 1) * 2 + 1);
-}
-
 // ── SURAH DATA ──
 const SD=[
-  [1,"Al-Fatihah",7,"Makkiyyah","Pembukaan"],
-  [2,"Al-Baqarah",286,"Madaniyyah","Sapi Betina"],
-  [3,"Ali 'Imran",200,"Madaniyyah","Keluarga Imran"],
-  [4,"An-Nisa",176,"Madaniyyah","Wanita"],
-  [5,"Al-Ma'idah",120,"Madaniyyah","Hidangan"],
-  [6,"Al-An'am",165,"Makkiyyah","Binatang Ternak"],
-  [7,"Al-A'raf",206,"Makkiyyah","Tempat Tertinggi"],
-  [8,"Al-Anfal",75,"Madaniyyah","Rampasan Perang"],
-  [9,"At-Taubah",129,"Madaniyyah","Pengampunan"],
-  [10,"Yunus",109,"Makkiyyah","Nabi Yunus"],
-  [11,"Hud",123,"Makkiyyah","Nabi Hud"],
-  [12,"Yusuf",111,"Makkiyyah","Nabi Yusuf"],
-  [13,"Ar-Ra'd",43,"Madaniyyah","Guruh"],
-  [14,"Ibrahim",52,"Makkiyyah","Nabi Ibrahim"],
-  [15,"Al-Hijr",99,"Makkiyyah","Al-Hijr"],
-  [16,"An-Nahl",128,"Makkiyyah","Lebah"],
-  [17,"Al-Isra",111,"Makkiyyah","Perjalanan Malam"],
-  [18,"Al-Kahf",110,"Makkiyyah","Gua"],
-  [19,"Maryam",98,"Makkiyyah","Maryam"],
-  [20,"Ta Ha",135,"Makkiyyah","Ta Ha"],
-  [21,"Al-Anbiya",112,"Makkiyyah","Para Nabi"],
-  [22,"Al-Hajj",78,"Madaniyyah","Haji"],
-  [23,"Al-Mu'minun",118,"Makkiyyah","Orang Beriman"],
-  [24,"An-Nur",64,"Madaniyyah","Cahaya"],
-  [25,"Al-Furqan",77,"Makkiyyah","Pembeda"],
-  [26,"Asy-Syu'ara",227,"Makkiyyah","Para Penyair"],
-  [27,"An-Naml",93,"Makkiyyah","Semut"],
-  [28,"Al-Qasas",88,"Makkiyyah","Cerita"],
-  [29,"Al-'Ankabut",69,"Makkiyyah","Laba-laba"],
-  [30,"Ar-Rum",60,"Makkiyyah","Bangsa Romawi"],
-  [31,"Luqman",34,"Makkiyyah","Luqman"],
-  [32,"As-Sajdah",30,"Makkiyyah","Sujud"],
-  [33,"Al-Ahzab",73,"Madaniyyah","Golongan Bersekutu"],
-  [34,"Saba'",54,"Makkiyyah","Kaum Saba"],
-  [35,"Fatir",45,"Makkiyyah","Pencipta"],
-  [36,"Ya Sin",83,"Makkiyyah","Ya Sin"],
-  [37,"As-Saffat",182,"Makkiyyah","Yang Bershaf-shaf"],
-  [38,"Sad",88,"Makkiyyah","Sad"],
-  [39,"Az-Zumar",75,"Makkiyyah","Rombongan"],
-  [40,"Gafir",85,"Makkiyyah","Yang Maha Pengampun"],
-  [41,"Fussilat",54,"Makkiyyah","Yang Dijelaskan"],
-  [42,"Asy-Syura",53,"Makkiyyah","Musyawarah"],
-  [43,"Az-Zukhruf",89,"Makkiyyah","Perhiasan"],
-  [44,"Ad-Dukhan",59,"Makkiyyah","Kabut"],
-  [45,"Al-Jasiyah",37,"Makkiyyah","Yang Berlutut"],
-  [46,"Al-Ahqaf",35,"Makkiyyah","Bukit Pasir"],
-  [47,"Muhammad",38,"Madaniyyah","Nabi Muhammad"],
-  [48,"Al-Fath",29,"Madaniyyah","Kemenangan"],
-  [49,"Al-Hujurat",18,"Madaniyyah","Kamar-kamar"],
-  [50,"Qaf",45,"Makkiyyah","Qaf"],
-  [51,"Az-Zariyat",60,"Makkiyyah","Angin yang Menerbangkan"],
-  [52,"At-Tur",49,"Makkiyyah","Bukit Sinai"],
-  [53,"An-Najm",62,"Makkiyyah","Bintang"],
-  [54,"Al-Qamar",55,"Makkiyyah","Bulan"],
-  [55,"Ar-Rahman",78,"Madaniyyah","Yang Maha Pengasih"],
-  [56,"Al-Waqi'ah",96,"Makkiyyah","Hari Kiamat"],
-  [57,"Al-Hadid",29,"Madaniyyah","Besi"],
-  [58,"Al-Mujadilah",22,"Madaniyyah","Wanita yang Mengajukan Gugatan"],
-  [59,"Al-Hasyr",24,"Madaniyyah","Pengusiran"],
-  [60,"Al-Mumtahanah",13,"Madaniyyah","Wanita yang Diuji"],
-  [61,"As-Saf",14,"Madaniyyah","Barisan"],
-  [62,"Al-Jumu'ah",11,"Madaniyyah","Hari Jumat"],
-  [63,"Al-Munafiqun",11,"Madaniyyah","Orang Munafik"],
-  [64,"At-Tagabun",18,"Madaniyyah","Hari Ditampakkan Kesalahan"],
-  [65,"At-Talaq",12,"Madaniyyah","Talak"],
-  [66,"At-Tahrim",12,"Madaniyyah","Mengharamkan"],
-  [67,"Al-Mulk",30,"Makkiyyah","Kerajaan"],
-  [68,"Al-Qalam",52,"Makkiyyah","Pena"],
-  [69,"Al-Haqqah",52,"Makkiyyah","Hari Kiamat"],
-  [70,"Al-Ma'arij",44,"Makkiyyah","Tempat Naik"],
-  [71,"Nuh",28,"Makkiyyah","Nabi Nuh"],
-  [72,"Al-Jin",28,"Makkiyyah","Jin"],
-  [73,"Al-Muzzammil",20,"Makkiyyah","Orang Berselimut"],
-  [74,"Al-Muddassir",56,"Makkiyyah","Orang Berkemul"],
-  [75,"Al-Qiyamah",40,"Makkiyyah","Hari Kiamat"],
-  [76,"Al-Insan",31,"Madaniyyah","Manusia"],
-  [77,"Al-Mursalat",50,"Makkiyyah","Malaikat yang Diutus"],
-  [78,"An-Naba",40,"Makkiyyah","Berita Besar"],
-  [79,"An-Nazi'at",46,"Makkiyyah","Malaikat yang Mencabut"],
-  [80,"Abasa",42,"Makkiyyah","Bermuka Masam"],
-  [81,"At-Takwir",29,"Makkiyyah","Menggulung"],
-  [82,"Al-Infitar",19,"Makkiyyah","Terbelah"],
-  [83,"Al-Mutaffifin",36,"Makkiyyah","Orang yang Curang"],
-  [84,"Al-Insyiqaq",25,"Makkiyyah","Terbelah"],
-  [85,"Al-Buruj",22,"Makkiyyah","Gugusan Bintang"],
-  [86,"At-Tariq",17,"Makkiyyah","Yang Datang di Malam Hari"],
-  [87,"Al-A'la",19,"Makkiyyah","Yang Paling Tinggi"],
-  [88,"Al-Gasyiyah",26,"Makkiyyah","Hari Pembalasan"],
-  [89,"Al-Fajr",30,"Makkiyyah","Fajar"],
-  [90,"Al-Balad",20,"Makkiyyah","Negeri"],
-  [91,"Asy-Syams",15,"Makkiyyah","Matahari"],
-  [92,"Al-Lail",21,"Makkiyyah","Malam"],
-  [93,"Ad-Duha",11,"Makkiyyah","Waktu Duha"],
-  [94,"Al-Insyirah",8,"Makkiyyah","Melapangkan"],
-  [95,"At-Tin",8,"Makkiyyah","Buah Tin"],
-  [96,"Al-Alaq",19,"Makkiyyah","Segumpal Darah"],
-  [97,"Al-Qadr",5,"Makkiyyah","Kemuliaan"],
-  [98,"Al-Bayyinah",8,"Madaniyyah","Bukti Nyata"],
-  [99,"Az-Zalzalah",8,"Madaniyyah","Kegoncangan"],
-  [100,"Al-'Adiyat",11,"Makkiyyah","Kuda Perang"],
-  [101,"Al-Qari'ah",11,"Makkiyyah","Hari Kiamat"],
-  [102,"At-Takasur",8,"Makkiyyah","Bermegah-megahan"],
-  [103,"Al-'Asr",3,"Makkiyyah","Masa"],
-  [104,"Al-Humazah",9,"Makkiyyah","Pengumpat"],
-  [105,"Al-Fil",5,"Makkiyyah","Gajah"],
-  [106,"Quraisy",4,"Makkiyyah","Suku Quraisy"],
-  [107,"Al-Ma'un",7,"Makkiyyah","Barang yang Berguna"],
-  [108,"Al-Kausar",3,"Makkiyyah","Nikmat yang Berlimpah"],
-  [109,"Al-Kafirun",6,"Makkiyyah","Orang Kafir"],
-  [110,"An-Nasr",3,"Madaniyyah","Pertolongan"],
-  [111,"Al-Lahab",5,"Makkiyyah","Gejolak Api"],
-  [112,"Al-Ikhlas",4,"Makkiyyah","Ikhlas"],
-  [113,"Al-Falaq",5,"Makkiyyah","Waktu Subuh"],
-  [114,"An-Nas",6,"Makkiyyah","Manusia"]
+  [1,"Al-Fatihah","الفاتحة",7,"Makkiyyah","Pembukaan"],
+  [2,"Al-Baqarah","البقرة",286,"Madaniyyah","Sapi Betina"],
+  [3,"Ali 'Imran","آل عمران",200,"Madaniyyah","Keluarga Imran"],
+  [4,"An-Nisa","النساء",176,"Madaniyyah","Wanita"],
+  [5,"Al-Ma'idah","المائدة",120,"Madaniyyah","Hidangan"],
+  [6,"Al-An'am","الأنعام",165,"Makkiyyah","Binatang Ternak"],
+  [7,"Al-A'raf","الأعراف",206,"Makkiyyah","Tempat Tertinggi"],
+  [8,"Al-Anfal","الأنفال",75,"Madaniyyah","Rampasan Perang"],
+  [9,"At-Taubah","التوبة",129,"Madaniyyah","Pengampunan"],
+  [10,"Yunus","يونس",109,"Makkiyyah","Nabi Yunus"],
+  [11,"Hud","هود",123,"Makkiyyah","Nabi Hud"],
+  [12,"Yusuf","يوسف",111,"Makkiyyah","Nabi Yusuf"],
+  [13,"Ar-Ra'd","الرعد",43,"Madaniyyah","Guruh"],
+  [14,"Ibrahim","إبراهيم",52,"Makkiyyah","Nabi Ibrahim"],
+  [15,"Al-Hijr","الحجر",99,"Makkiyyah","Al-Hijr"],
+  [16,"An-Nahl","النحل",128,"Makkiyyah","Lebah"],
+  [17,"Al-Isra","الإسراء",111,"Makkiyyah","Perjalanan Malam"],
+  [18,"Al-Kahf","الكهف",110,"Makkiyyah","Gua"],
+  [19,"Maryam","مريم",98,"Makkiyyah","Maryam"],
+  [20,"Ta Ha","طه",135,"Makkiyyah","Ta Ha"],
+  [21,"Al-Anbiya","الأنبياء",112,"Makkiyyah","Para Nabi"],
+  [22,"Al-Hajj","الحج",78,"Madaniyyah","Haji"],
+  [23,"Al-Mu'minun","المؤمنون",118,"Makkiyyah","Orang Beriman"],
+  [24,"An-Nur","النور",64,"Madaniyyah","Cahaya"],
+  [25,"Al-Furqan","الفرقان",77,"Makkiyyah","Pembeda"],
+  [26,"Asy-Syu'ara","الشعراء",227,"Makkiyyah","Para Penyair"],
+  [27,"An-Naml","النمل",93,"Makkiyyah","Semut"],
+  [28,"Al-Qasas","القصص",88,"Makkiyyah","Cerita"],
+  [29,"Al-'Ankabut","العنكبوت",69,"Makkiyyah","Laba-laba"],
+  [30,"Ar-Rum","الروم",60,"Makkiyyah","Bangsa Romawi"],
+  [31,"Luqman","لقمان",34,"Makkiyyah","Luqman"],
+  [32,"As-Sajdah","السجدة",30,"Makkiyyah","Sujud"],
+  [33,"Al-Ahzab","الأحزاب",73,"Madaniyyah","Golongan Bersekutu"],
+  [34,"Saba'","سبأ",54,"Makkiyyah","Kaum Saba"],
+  [35,"Fatir","فاطر",45,"Makkiyyah","Pencipta"],
+  [36,"Ya Sin","يس",83,"Makkiyyah","Ya Sin"],
+  [37,"As-Saffat","الصافات",182,"Makkiyyah","Yang Bershaf-shaf"],
+  [38,"Sad","ص",88,"Makkiyyah","Sad"],
+  [39,"Az-Zumar","الزمر",75,"Makkiyyah","Rombongan"],
+  [40,"Gafir","غافر",85,"Makkiyyah","Yang Maha Pengampun"],
+  [41,"Fussilat","فصلت",54,"Makkiyyah","Yang Dijelaskan"],
+  [42,"Asy-Syura","الشورى",53,"Makkiyyah","Musyawarah"],
+  [43,"Az-Zukhruf","الزخرف",89,"Makkiyyah","Perhiasan"],
+  [44,"Ad-Dukhan","الدخان",59,"Makkiyyah","Kabut"],
+  [45,"Al-Jasiyah","الجاثية",37,"Makkiyyah","Yang Berlutut"],
+  [46,"Al-Ahqaf","الأحقاف",35,"Makkiyyah","Bukit Pasir"],
+  [47,"Muhammad","محمد",38,"Madaniyyah","Nabi Muhammad"],
+  [48,"Al-Fath","الفتح",29,"Madaniyyah","Kemenangan"],
+  [49,"Al-Hujurat","الحجرات",18,"Madaniyyah","Kamar-kamar"],
+  [50,"Qaf","ق",45,"Makkiyyah","Qaf"],
+  [51,"Az-Zariyat","الذاريات",60,"Makkiyyah","Angin yang Menerbangkan"],
+  [52,"At-Tur","الطور",49,"Makkiyyah","Bukit Sinai"],
+  [53,"An-Najm","النجم",62,"Makkiyyah","Bintang"],
+  [54,"Al-Qamar","القمر",55,"Makkiyyah","Bulan"],
+  [55,"Ar-Rahman","الرحمن",78,"Madaniyyah","Yang Maha Pengasih"],
+  [56,"Al-Waqi'ah","الواقعة",96,"Makkiyyah","Hari Kiamat"],
+  [57,"Al-Hadid","الحديد",29,"Madaniyyah","Besi"],
+  [58,"Al-Mujadilah","المجادلة",22,"Madaniyyah","Wanita yang Mengajukan Gugatan"],
+  [59,"Al-Hasyr","الحشر",24,"Madaniyyah","Pengusiran"],
+  [60,"Al-Mumtahanah","الممتحنة",13,"Madaniyyah","Wanita yang Diuji"],
+  [61,"As-Saf","الصف",14,"Madaniyyah","Barisan"],
+  [62,"Al-Jumu'ah","الجمعة",11,"Madaniyyah","Hari Jumat"],
+  [63,"Al-Munafiqun","المنافقون",11,"Madaniyyah","Orang Munafik"],
+  [64,"At-Tagabun","التغابن",18,"Madaniyyah","Hari Ditampakkan Kesalahan"],
+  [65,"At-Talaq","الطلاق",12,"Madaniyyah","Talak"],
+  [66,"At-Tahrim","التحريم",12,"Madaniyyah","Mengharamkan"],
+  [67,"Al-Mulk","الملك",30,"Makkiyyah","Kerajaan"],
+  [68,"Al-Qalam","القلم",52,"Makkiyyah","Pena"],
+  [69,"Al-Haqqah","الحاقة",52,"Makkiyyah","Hari Kiamat"],
+  [70,"Al-Ma'arij","المعارج",44,"Makkiyyah","Tempat Naik"],
+  [71,"Nuh","نوح",28,"Makkiyyah","Nabi Nuh"],
+  [72,"Al-Jin","الجن",28,"Makkiyyah","Jin"],
+  [73,"Al-Muzzammil","المزمل",20,"Makkiyyah","Orang Berselimut"],
+  [74,"Al-Muddassir","المدثر",56,"Makkiyyah","Orang Berkemul"],
+  [75,"Al-Qiyamah","القيامة",40,"Makkiyyah","Hari Kiamat"],
+  [76,"Al-Insan","الإنسان",31,"Madaniyyah","Manusia"],
+  [77,"Al-Mursalat","المرسلات",50,"Makkiyyah","Malaikat yang Diutus"],
+  [78,"An-Naba","النبأ",40,"Makkiyyah","Berita Besar"],
+  [79,"An-Nazi'at","النازعات",46,"Makkiyyah","Malaikat yang Mencabut"],
+  [80,"'Abasa","عبس",42,"Makkiyyah","Bermuka Masam"],
+  [81,"At-Takwir","التكوير",29,"Makkiyyah","Menggulung"],
+  [82,"Al-Infitar","الانفطار",19,"Makkiyyah","Terbelah"],
+  [83,"Al-Mutaffifin","المطففين",36,"Makkiyyah","Orang yang Curang"],
+  [84,"Al-Insyiqaq","الانشقاق",25,"Makkiyyah","Terbelah"],
+  [85,"Al-Buruj","البروج",22,"Makkiyyah","Gugusan Bintang"],
+  [86,"At-Tariq","الطارق",17,"Makkiyyah","Yang Datang di Malam Hari"],
+  [87,"Al-A'la","الأعلى",19,"Makkiyyah","Yang Paling Tinggi"],
+  [88,"Al-Gasyiyah","الغاشية",26,"Makkiyyah","Hari Pembalasan"],
+  [89,"Al-Fajr","الفجر",30,"Makkiyyah","Fajar"],
+  [90,"Al-Balad","البلد",20,"Makkiyyah","Negeri"],
+  [91,"Asy-Syams","الشمس",15,"Makkiyyah","Matahari"],
+  [92,"Al-Lail","الليل",21,"Makkiyyah","Malam"],
+  [93,"Ad-Duha","الضحى",11,"Makkiyyah","Waktu Duha"],
+  [94,"Al-Insyirah","الانشراح",8,"Makkiyyah","Melapangkan"],
+  [95,"At-Tin","التين",8,"Makkiyyah","Buah Tin"],
+  [96,"Al-'Alaq","العلق",19,"Makkiyyah","Segumpal Darah"],
+  [97,"Al-Qadr","القدر",5,"Makkiyyah","Kemuliaan"],
+  [98,"Al-Bayyinah","البينة",8,"Madaniyyah","Bukti Nyata"],
+  [99,"Az-Zalzalah","الزلزلة",8,"Madaniyyah","Kegoncangan"],
+  [100,"Al-'Adiyat","العاديات",11,"Makkiyyah","Kuda Perang"],
+  [101,"Al-Qari'ah","القارعة",11,"Makkiyyah","Hari Kiamat"],
+  [102,"At-Takasur","التكاثر",8,"Makkiyyah","Bermegah-megahan"],
+  [103,"Al-'Asr","العصر",3,"Makkiyyah","Masa"],
+  [104,"Al-Humazah","الهمزة",9,"Makkiyyah","Pengumpat"],
+  [105,"Al-Fil","الفيل",5,"Makkiyyah","Gajah"],
+  [106,"Quraisy","قريش",4,"Makkiyyah","Suku Quraisy"],
+  [107,"Al-Ma'un","الماعون",7,"Makkiyyah","Barang yang Berguna"],
+  [108,"Al-Kausar","الكوثر",3,"Makkiyyah","Nikmat yang Berlimpah"],
+  [109,"Al-Kafirun","الكافرون",6,"Makkiyyah","Orang Kafir"],
+  [110,"An-Nasr","النصر",3,"Madaniyyah","Pertolongan"],
+  [111,"Al-Lahab","المسد",5,"Makkiyyah","Gejolak Api"],
+  [112,"Al-Ikhlas","الإخلاص",4,"Makkiyyah","Ikhlas"],
+  [113,"Al-Falaq","الفلق",5,"Makkiyyah","Waktu Subuh"],
+  [114,"An-Nas","الناس",6,"Makkiyyah","Manusia"]
 ];
 
 // ── STATE ──
 let curSurah=null,curData=null,curAyat=0,allAyat=[],playing=false,paused=false,phase='idle';
 const audio=new Audio();audio.crossOrigin='anonymous';
 
-// ── HELPERS ──
+// ── URL HELPERS ──
 const pad=(n,l)=>String(n).padStart(l,'0');
 const QARI={'01':'Alafasy_64kbps','02':'Abdul_Basit_Murattal_64kbps','03':'Husary_64kbps','04':'Muhammad_Ayyoub_64kbps','05':'Saad_Al-Ghamidi_64kbps','06':'Yasser_Ad-Dussary_64kbps'};
 let qari='01';
@@ -536,7 +714,7 @@ function _one(url,tok){
   });
 }
 async function _run(from,tok){
-  const[sn,,,max]=curData,showBism=sn!==1&&sn!==9;
+  const [sn,,,max]=curData,showBism=sn!==1&&sn!==9;
   if(showBism&&from===0){
     curAyat=0;setPhase('arab');updPlayerBism();updPlayBtn();
     await _one(arabURL(1,1),tok);if(tok!==_tok)return;
@@ -568,41 +746,52 @@ function onQariChange(){qari=document.getElementById('qariSel').value;if(playing
 function seekAudio(e){if(!audio.duration)return;const r=e.currentTarget.getBoundingClientRect();audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;}
 
 // ── NAVIGATION ──
-function goHome(){stopAudio();document.getElementById('pageHome').style.display='block';document.getElementById('pageSurah').style.display='none';window.scrollTo({top:0,behavior:'smooth'});curSurah=null;curData=null;allAyat=[];}
-function openSurah(num){document.getElementById('pageHome').style.display='none';document.getElementById('pageSurah').style.display='block';window.scrollTo({top:0,behavior:'instant'});loadSurah(num);}
+function goHome(){
+  stopAudio();
+  document.getElementById('pageHome').style.display='block';
+  document.getElementById('pageSurah').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+  curSurah=null;curData=null;allAyat=[];
+}
+function openSurah(num){
+  document.getElementById('pageHome').style.display='none';
+  document.getElementById('pageSurah').style.display='block';
+  window.scrollTo({top:0,behavior:'instant'});
+  loadSurah(num);
+}
 function scrollToSurah(){document.getElementById('surahSection').scrollIntoView({behavior:'smooth'});}
 
 // ── RENDER HOME ──
 function renderGrid(list){
   const g=document.getElementById('surahGrid');
   if(!list.length){g.innerHTML='<div class="loading"><span>Tidak ditemukan</span></div>';return;}
-  g.innerHTML=list.map(([n,id,ayat,type,arti])=>`
+  g.innerHTML=list.map(([n,id,ar,,type,arti])=>`
     <div class="surah-card" onclick="openSurah(${n})">
       <div class="card-num">${n}</div>
       <div class="card-body">
         <div class="card-name">${id}</div>
         <div class="card-arti">${arti}</div>
-        <div class="card-meta">${type} · ${ayat} ayat</div>
+        <div class="card-meta">${type} · ${SD[n-1][3]} ayat</div>
       </div>
-      <div class="card-surah-name">${surahNameChar(n)}</div>
+      <div class="card-arabic">${ar}</div>
     </div>`).join('');
 }
 function filterSurah(){
   const q=document.getElementById('searchInp').value.toLowerCase();
-  renderGrid(q?SD.filter(([n,id,,,arti])=>id.toLowerCase().includes(q)||arti.toLowerCase().includes(q)||String(n).includes(q)):SD);
+  renderGrid(q?SD.filter(([n,id,ar,,,arti])=>id.toLowerCase().includes(q)||ar.includes(q)||arti.toLowerCase().includes(q)||String(n).includes(q)):SD);
 }
 
 // ── LOAD SURAH ──
 async function loadSurah(num){
   stopAudio();curSurah=num;curData=SD.find(s=>s[0]===num);curAyat=0;allAyat=[];
-  const[n,nameId,,type]=curData;
+  const [n,nameId,,ayatCount,type]=curData;
   document.getElementById('hdrName').textContent=nameId;
-  document.getElementById('hdrMeta').textContent=`${type} · ${curData[2]} Ayat · Surah ke-${n}`;
+  document.getElementById('hdrMeta').textContent=`${type} · ${ayatCount} Ayat · Surah ke-${n}`;
   document.getElementById('bismillahEl').style.display=(n!==1&&n!==9)?'block':'none';
   document.getElementById('ayatWrap').innerHTML='<div class="loading"><div class="spinner"></div><span>Memuat ayat…</span></div>';
   try{
     const res=await fetch(`https://api.alquran.cloud/v1/surah/${num}/editions/quran-uthmani,id.indonesian`);
-    const{data}=await res.json();
+    const {data}=await res.json();
     const[arabEd,terjEd]=data;
     allAyat=arabEd.ayahs.map((a,i)=>{
       let arabic=a.text,terjemah=terjEd.ayahs[i].text;
@@ -614,7 +803,7 @@ async function loadSurah(num){
     });
     renderAyat(allAyat);
   }catch{
-    document.getElementById('ayatWrap').innerHTML='<div class="loading"><span style="color:var(--error)">Gagal memuat. Periksa koneksi.</span></div>';
+    document.getElementById('ayatWrap').innerHTML='<div class="loading"><span style="color:var(--md-sys-color-error)">Gagal memuat. Periksa koneksi.</span></div>';
   }
 }
 function renderAyat(ayat){
@@ -629,21 +818,31 @@ function renderAyat(ayat){
         </div>
       </div>
       <div class="ayat-arabic">${a.arabic}</div>
-      <div class="ayat-div"></div>
+      <div class="ayat-divider"></div>
       <div class="ayat-terj">${a.terjemah}</div>
-      <div class="now-playing"><div class="bars"><span></span><span></span><span></span><span></span></div>Sedang Diputar</div>
+      <div class="now-playing">
+        <div class="bars"><span></span><span></span><span></span><span></span></div>
+        Sedang Diputar
+      </div>
     </div>`).join('');
 }
 
-// ── UI ──
+// ── UI UPDATES ──
 function setPhase(p){
   phase=p;
   const el=document.getElementById('phasePill');
   el.className='phase-badge '+(p==='arab'?'arab':p==='terjemah'?'terjemah':'idle');
   el.textContent=p==='arab'?'Arab':p==='terjemah'?'Terjemahan':'Siap';
 }
-function updPlayBtn(){const on=playing&&!paused;document.getElementById('iPlay').style.display=on?'none':'block';document.getElementById('iPause').style.display=on?'block':'none';}
-function updPlayerBism(){document.getElementById('plAr').textContent='بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ';document.getElementById('plSub').textContent=(curData?curData[1]:'')+' · Bismillah';}
+function updPlayBtn(){
+  const on=playing&&!paused;
+  document.getElementById('iPlay').style.display=on?'none':'block';
+  document.getElementById('iPause').style.display=on?'block':'none';
+}
+function updPlayerBism(){
+  document.getElementById('plAr').textContent='بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
+  document.getElementById('plSub').textContent=(curData?curData[1]:'')+' · Bismillah';
+}
 function updPlayerUI(){
   document.querySelectorAll('.ayat-row').forEach(e=>e.classList.remove('playing'));
   const row=document.getElementById(`ayat-${curAyat}`);
@@ -652,9 +851,7 @@ function updPlayerUI(){
   if(a&&curData){
     document.getElementById('plAr').textContent=a.arabic.length>40?a.arabic.slice(0,40)+'…':a.arabic;
     document.getElementById('plSub').textContent=`${curData[1]} · Ayat ${curAyat}`;
-    document.getElementById('plThumb').textContent=surahNameChar(curData[0]);
-    document.getElementById('plThumb').style.fontFamily='var(--font-surah)';
-    document.getElementById('plThumb').style.fontSize='28px';
+    document.getElementById('plThumb').textContent=curData[2].charAt(0)||'☪';
   }
 }
 function setupMS(){
@@ -680,17 +877,22 @@ function toggleTheme(){
   const l=document.body.classList.contains('light');
   document.getElementById('iMoon').style.display=l?'none':'block';
   document.getElementById('iSun').style.display=l?'block':'none';
-  document.getElementById('themeColor').content=l?'#F6F8FA':'#0D1117';
+  document.getElementById('themeColor').content=l?'#FFFBFE':'#1C1B1F';
   localStorage.setItem('qk-theme',l?'light':'dark');
 }
 if(localStorage.getItem('qk-theme')==='light'){
   document.body.classList.add('light');
   document.getElementById('iMoon').style.display='none';
   document.getElementById('iSun').style.display='block';
-  document.getElementById('themeColor').content='#F6F8FA';
+  document.getElementById('themeColor').content='#FFFBFE';
 }
 
-window.addEventListener('scroll',()=>document.getElementById('topBar').classList.toggle('scrolled',scrollY>10),{passive:true});
+// ── SCROLL EFFECT ──
+window.addEventListener('scroll',()=>{
+  document.getElementById('topBar').classList.toggle('scrolled',window.scrollY>10);
+},{passive:true});
+
+// ── INIT ──
 renderGrid(SD);
 </script>
 </body>
