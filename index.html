@@ -8,9 +8,23 @@
 <title>QuranKita.id</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.quran.ws/assets/fonts/uthman-naskh.woff2:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+
 <style>
 /* ── MD3 TOKENS ── */
+
+@font-face {
+    font-family: 'UthmanNaskh';
+    src: url('https://fonts.quran.ws/assets/fonts/uthman-naskh.woff2') format('woff2');
+    font-display: swap;
+}
+
+.quran {
+    font-family: 'UthmanNaskh', serif;
+    direction: rtl;
+    font-size: 2rem;
+    line-height: 2.3;
+}
+  
 :root{
   --md-sys-color-primary: rgb(219 198 110);
   --md-sys-color-surface-tint: rgb(219 198 110);
