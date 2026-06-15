@@ -4,6 +4,12 @@
    ============================================ */
 
 /* ── DARK (default) ── */
+@font-face {
+  font-family: 'UthmanicHafs';
+  src: url('https://fonts.quran.ws/assets/fonts/uthmanic-hafs-v22.woff2') format('woff2');
+  font-display: swap;
+}
+
 :root {
   --md-sys-color-primary: rgb(219 198 110);
   --md-sys-color-surface-tint: rgb(219 198 110);
