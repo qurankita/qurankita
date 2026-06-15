@@ -84,7 +84,11 @@ async function initSurah() {
       return { num: a.numberInSurah, arabic, terjemah };
     });
 
-    UI.renderAyat(ayat);
+    // Simpan untuk fungsi share
+    _shareAyatList = ayat;
+    _shareSurahName = surah[1];
+
+    UI.renderAyat(ayat, surah[1]);
   } catch {
     UI.showError('ayatWrap', 'Gagal memuat ayat. Periksa koneksi internet Anda.');
     return;
@@ -173,4 +177,54 @@ async function initSurah() {
 const themeBtn = document.getElementById('themeBtn');
 if (themeBtn) {
   themeBtn.addEventListener('click', () => UI.toggleTheme());
+}
+
+/* ── SHARE FUNCTIONS (global, dipanggil dari HTML) ── */
+let _shareAyatList = [];
+let _shareSurahName = '';
+
+function shareAyat(num) {
+  const ayat = _shareAyatList.find(a => a.num === num);
+  if (!ayat) return;
+  UI.showShareModal(ayat, _shareSurahName);
+}
+
+function closeShareModal() {
+  const modal = document.getElementById('shareModal');
+  if (!modal) return;
+  modal.classList.remove('open');
+  setTimeout(() => modal.remove(), 250);
+}
+
+function shareToWhatsapp(encoded) {
+  window.open(`https://wa.me/?text=${encoded}`, '_blank', 'noopener');
+}
+
+function shareToX(encoded) {
+  window.open(`https://twitter.com/intent/tweet?text=${encoded}`, '_blank', 'noopener');
+}
+
+function copyAyat(encoded) {
+  const text = decodeURIComponent(encoded);
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('btnCopy');
+    if (!btn) return;
+    btn.innerHTML = `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+      Tersalin!`;
+    btn.style.background = 'var(--md-sys-color-tertiary-container)';
+    btn.style.color = 'var(--md-sys-color-on-tertiary-container)';
+    setTimeout(() => closeShareModal(), 1200);
+  }).catch(() => {
+    // Fallback untuk browser lama
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    closeShareModal();
+  });
 }
