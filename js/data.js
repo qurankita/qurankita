@@ -142,6 +142,12 @@ const QARI_LIST = [
     name: 'Saad Al-Ghamidi',
     baseUrl: 'https://archive.org/download/MurottaldanTerjemahanAlQuran-SyeikhAlGhomidi/',
     getFile: (n) => encodeURIComponent(`♪ ${String(n).padStart(3,'0')} ~ ${GHAMIDI_FILES[n]}.mp3`)
+  },
+  {
+    id: 'hanirifai',
+    name: 'Hani Ar-Rifai',
+    baseUrl: 'https://ia801806.us.archive.org/16/items/Al-Quran-Hani-Rifai-Terjemahan-Indonesia/',
+    getFile: (n) => `Hani-Rifai-Quran-Terjemah-${String(n).padStart(3,'0')}-${HANI_RIFAI_FILES[n]}.mp3`
   }
 ];
 
@@ -176,6 +182,39 @@ const GHAMIDI_FILES = {
   105:'Al Fiil', 106:'Quraisy', 107:'Al Maun', 108:'Al Kautsar',
   109:'Al Kafirun', 110:'An Nashr', 111:'Al Lahab', 112:'Al Ikhlas',
   113:'Al Falaq', 114:'An Naas'
+};
+
+/* ── HANI AR-RIFAI FILE NAME MAP ── */
+const HANI_RIFAI_FILES = {
+  1:'Al-Fatihah', 2:'Al-Baqarah', 3:'Ali-Imran', 4:'An-Nisaa',
+  5:'Al-Maidah', 6:'Al-Anam', 7:'Al-Araf', 8:'Al-Anfaal',
+  9:'At-Taubah', 10:'Yunus', 11:'Huud', 12:'Yusuf',
+  13:'Ar-Radu', 14:'Ibrahim', 15:'Al-Hijr', 16:'An-Nahl',
+  17:'Al-Israa', 18:'Al-Kahfi', 19:'Maryam', 20:'Thaahaa',
+  21:'Al-Anbiyaa', 22:'Al-Hajj', 23:'Al-Muminun', 24:'An-Nuur',
+  25:'Al-Furqaan', 26:'Asy-Syuara', 27:'An-Naml', 28:'Al-Qashash',
+  29:'Al-Ankabut', 30:'Ar-Ruum', 31:'Luqman', 32:'As-Sajdah',
+  33:'Al-Ahzab', 34:'Saba', 35:'Faathir', 36:'Yaasiin',
+  37:'Ash-Shaaffat', 38:'Shaad', 39:'Az-Zumar', 40:'Al-Ghafir',
+  41:'Al-Fushilat', 42:'Asy-Syuura', 43:'Az-Zukhruf', 44:'Ad-Dukhaan',
+  45:'Al-Jaatsiyah', 46:'Al-Ahqaaf', 47:'Muhammad', 48:'Al-Fath',
+  49:'Al-Hujuraat', 50:'Qaaf', 51:'Adz-Dzaariyaat', 52:'Ath-Thuur',
+  53:'An-Najm', 54:'Al-Qamar', 55:'Ar-Rahmaan', 56:'Al-Waaqiah',
+  57:'Al-Hadiid', 58:'Al-Mujaadalah', 59:'Al-Hasyr', 60:'Al-Mumtahanah',
+  61:'Ash-Shaff', 62:'Al-Jumuah', 63:'Al-Munafiqun', 64:'Ath-Taghabun',
+  65:'Ath-Thalaaq', 66:'At-Tahriim', 67:'Al-Mulk', 68:'Al-Qalam',
+  69:'Al-Haaqqah', 70:'Al-Maarij', 71:'Nuh', 72:'Al-Jin',
+  73:'Al-Muzammil', 74:'Al-Muddastir', 75:'Al-Qiyaamah', 76:'Al-Insaan',
+  77:'Al-Mursalaat', 78:'An-Naba', 79:'An-Naaziaat', 80:'Abasa',
+  81:'At-Takwiir', 82:'Al-Infithaar', 83:'Al-Muthaffifiin', 84:'Al-Insyiqaaq',
+  85:'Al-Buruuj', 86:'Ath-Thariq', 87:'Al-Alaa', 88:'Al-Ghasyiyah',
+  89:'Al-Fajr', 90:'Al-Balad', 91:'Asy-Syams', 92:'Al-Lail',
+  93:'Adh-Dhuha', 94:'As-Syarh', 95:'At-Tiin', 96:'Al-Alaq',
+  97:'Al-Qadr', 98:'Al-Bayyinah', 99:'Az-Zalzalah', 100:'Al-Adiyaat',
+  101:'Al-Qaariah', 102:'At-Takaatsur', 103:'Al-Ashr', 104:'Al-Humazah',
+  105:'Al-Fiil', 106:'Quraisy', 107:'Al-Maauun', 108:'Al-Kautsar',
+  109:'Al-Kaafiruun', 110:'An-Nashr', 111:'Al-Lahb', 112:'Al-Ikhlash',
+  113:'Al-Falaq', 114:'An-Naas'
 };
 
 /* ── HELPERS ── */
