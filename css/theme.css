@@ -4,13 +4,6 @@
    ============================================ */
 
 /* ── DARK (default) ── */
-@font-face {
-  font-family: 'UthmanicHafs';
-  src: url('https://verses.quran.foundation/fonts/quran/hafs/uthmanic_hafs/UthmanicHafs1Ver18.woff2') format('woff2'),
-       url('https://verses.quran.foundation/fonts/quran/hafs/uthmanic_hafs/UthmanicHafs1Ver18.ttf') format('truetype');
-  font-display: swap;
-}
-
 :root {
   --md-sys-color-primary: rgb(219 198 110);
   --md-sys-color-surface-tint: rgb(219 198 110);
@@ -65,7 +58,7 @@
 
   /* ── Font ── */
   --md-font:        'Roboto', sans-serif;
-  --md-font-arab:   'UthmanicHafs', serif;
+  --md-font-arab:   'Scheherazade New', serif;
 
   /* ── Layout ── */
   --nav-h:          64px;
