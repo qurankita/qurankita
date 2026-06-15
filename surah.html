@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#150F0B" id="themeColor"/>
+  <meta name="description" content="Baca dan dengarkan surah Al-Quran dengan terjemahan suara bahasa Indonesia — QuranKita.id"/>
+  <title>QuranKita.id</title>
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="preconnect" href="https://api.alquran.cloud"/>
+  <link rel="preconnect" href="https://archive.org"/>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="./css/theme.css"/>
+  <link rel="stylesheet" href="./css/main.css"/>
+</head>
+<body>
+
+<!-- TOP APP BAR -->
+<header class="top-bar" id="topBar" role="banner">
+  <a class="bar-brand" href="./index.html" aria-label="QuranKita Beranda">
+    <div class="bar-icon" aria-hidden="true">☪</div>
+    <span class="bar-title">QuranKita</span>
+  </a>
+  <nav class="nav-tabs" aria-label="Navigasi utama">
+    <button class="nav-tab" onclick="window.location.href='./index.html'">Beranda</button>
+    <button class="nav-tab active" aria-current="page">Surah</button>
+  </nav>
+  <button class="icon-btn" id="themeBtn" aria-label="Ganti tema">
+    <svg id="iMoon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+    <svg id="iSun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+  </button>
+</header>
+
+<!-- SURAH PAGE -->
+<main class="page-surah">
+
+  <!-- STICKY SURAH HEADER -->
+  <div class="surah-top" role="region" aria-label="Informasi surah">
+    <div class="surah-top-inner">
+      <a class="back-btn" href="./index.html" aria-label="Kembali ke daftar surah">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="m15 18-6-6 6-6"/>
+        </svg>
+        Daftar Surah
+      </a>
+      <div class="surah-info">
+        <div class="surah-info-left">
+          <h1 id="hdrName">—</h1>
+          <div class="meta" id="hdrMeta">—</div>
+        </div>
+        <div class="surah-info-right">
+          <!-- Pilih Qari -->
+          <div class="select-wrap">
+            <select class="qari-sel" id="qariSel" aria-label="Pilih qari">
+              <option value="mishary">Mishary Rasyid</option>
+              <option value="sudais">Abdurrahman As-Sudais</option>
+              <option value="ghamidi">Saad Al-Ghamidi</option>
+            </select>
+            <svg class="sel-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </div>
+          <!-- Tombol Putar -->
+          <button class="btn-filled" id="btnPutar" aria-label="Putar surah ini">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            Putar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BISMILLAH -->
+  <div class="bismillah" id="bismillahEl" style="display:none" aria-label="Bismillahirrahmanirrahim" lang="ar">
+    بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+  </div>
+
+  <!-- AYAT LIST -->
+  <div id="ayatWrap" class="ayat-list" role="list" aria-label="Daftar ayat">
+    <div class="loading" role="status" aria-label="Memuat ayat">
+      <div class="spinner"></div>
+      <span>Memuat ayat…</span>
+    </div>
+  </div>
+
+  <!-- PREV / NEXT SURAH -->
+  <nav class="surah-nav" id="surahNav" aria-label="Navigasi surah"></nav>
+
+</main>
+
+<!-- PLAYER BAR -->
+<div class="player" id="player" role="region" aria-label="Pemutar audio">
+  <!-- Info -->
+  <div class="pl-info">
+    <div class="pl-thumb" id="plThumb" aria-hidden="true">☪</div>
+    <div class="pl-text">
+      <div class="pl-title" id="plTitle">—</div>
+      <div class="pl-qari" id="plQari">—</div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="pl-center">
+    <div class="pl-controls">
+      <!-- Prev Surah -->
+      <button class="pctrl" id="btnPrevSurah" aria-label="Surah sebelumnya">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/>
+        </svg>
+      </button>
+      <!-- Play/Pause -->
+      <button class="pctrl play-btn" id="btnPlay" aria-label="Putar atau jeda">
+        <svg id="iPlay" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        <svg id="iPause" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display:none" aria-hidden="true">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+        </svg>
+      </button>
+      <!-- Next Surah -->
+      <button class="pctrl" id="btnNextSurah" aria-label="Surah berikutnya">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M6 18l8.5-6L6 6v12zm2-8.14 4.72 3.43L8 16.85V9.86zM16 6h2v12h-2z"/>
+        </svg>
+      </button>
+    </div>
+    <!-- Progress -->
+    <div class="pl-progress">
+      <span class="p-time" id="pCur" aria-label="Waktu saat ini">0:00</span>
+      <div class="p-track" id="pTrack" role="slider" aria-label="Progress audio" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="p-fill" id="pFill"></div>
+      </div>
+      <span class="p-time" id="pDur" aria-label="Durasi total">0:00</span>
+    </div>
+  </div>
+
+  <!-- Volume -->
+  <div class="pl-right">
+    <div class="vol-wrap" aria-label="Volume">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M11 5 6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+      </svg>
+      <input
+        type="range"
+        class="vol-slider"
+        id="volSlider"
+        min="0" max="1" step="0.05" value="1"
+        aria-label="Volume"
+      />
+    </div>
+  </div>
+</div>
+
+<!-- JS -->
+<script src="./js/data.js" defer></script>
+<script src="./js/audio.js" defer></script>
+<script src="./js/ui.js" defer></script>
+<script src="./js/app.js" defer></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    await initSurah();
+
+    // Prev/Next surah dari player bar
+    const params   = new URLSearchParams(window.location.search);
+    const surahNum = parseInt(params.get('n')) || 1;
+
+    document.getElementById('btnPrevSurah')?.addEventListener('click', () => {
+      if (surahNum > 1) window.location.href = `./surah.html?n=${surahNum - 1}`;
+    });
+
+    document.getElementById('btnNextSurah')?.addEventListener('click', () => {
+      if (surahNum < 114) window.location.href = `./surah.html?n=${surahNum + 1}`;
+    });
+  });
+</script>
+
+</body>
+</html>
