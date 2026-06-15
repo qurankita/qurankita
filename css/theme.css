@@ -58,7 +58,7 @@
 
   /* ── Font ── */
   --md-font:        'Roboto', sans-serif;
-  --md-font-arab:   'Noto Naskh Arabic', serif;
+  --md-font-arab:   'UthmanicHafs', serif;
 
   /* ── Layout ── */
   --nav-h:          64px;
