@@ -77,7 +77,7 @@ async function initSurah() {
       // Hapus bismillah di ayat 1 (kecuali Al-Fatihah & At-Taubah)
 if (surahNum !== 1 && surahNum !== 9 && a.numberInSurah === 1) {
   // Bismillah selalu 38 karakter pertama + 1 spasi
-  const bismillah = 'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ';
+  const bismillah = 'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ الٓمٓ';
   if (arabic.startsWith(bismillah)) {
     arabic = arabic.slice(bismillah.length).trim();
   }
