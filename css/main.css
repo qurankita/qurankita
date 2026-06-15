@@ -94,7 +94,7 @@ body {
 }
 .hero-title {
   font-size: clamp(40px, 7vw, 72px); font-weight: 700;
-  color: var(--md-sys-color-primary);
+  color: #ffffff;
   line-height: 1.1; margin-bottom: 8px;
 }
 .hero-sub {
