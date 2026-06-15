@@ -76,13 +76,11 @@ async function initSurah() {
       let terjemah = terjEd.ayahs[i].text;
       // Hapus bismillah di ayat 1 (kecuali Al-Fatihah & At-Taubah)
 if (surahNum !== 1 && surahNum !== 9 && a.numberInSurah === 1) {
-  // Cari posisi akhir bismillah lalu potong
-  const marker = 'ٱلرَّحِيمِ';
-  const idx = arabic.indexOf(marker);
-  if (idx !== -1) {
-    arabic = arabic.slice(idx + marker.length).trim();
+  // Bismillah selalu 38 karakter pertama + 1 spasi
+  const bismillah = 'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ';
+  if (arabic.startsWith(bismillah)) {
+    arabic = arabic.slice(bismillah.length).trim();
   }
-  // Hapus bismillah terjemah
   terjemah = terjemah.replace(
     /^Dengan nama Allah[^\.]*\.\s*/i, ''
   ).trim();
