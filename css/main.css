@@ -94,7 +94,7 @@ body {
 }
 .hero-title {
   font-size: clamp(40px, 7vw, 72px); font-weight: 700;
-  color: #ffffff;
+  color: var(--md-sys-color-primary);
   line-height: 1.1; margin-bottom: 8px;
 }
 .hero-sub {
@@ -346,6 +346,95 @@ body {
   font-size: 15px; line-height: 1.8;
   color: var(--md-sys-color-on-surface-variant);
 }
+
+/* ── SHARE BUTTON ── */
+.share-btn {
+  margin-left: auto;
+  width: 32px; height: 32px; border-radius: 50%; border: none;
+  background: transparent; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: all .15s;
+}
+.share-btn:hover {
+  background: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-primary);
+}
+
+/* ── SHARE MODAL ── */
+.share-modal {
+  position: fixed; inset: 0; z-index: 300;
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; transition: opacity .25s;
+}
+.share-modal.open { opacity: 1; }
+.share-modal-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.5);
+  backdrop-filter: blur(4px);
+}
+.share-modal-box {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 520px;
+  background: var(--md-sys-color-surface-container-high);
+  border-radius: var(--md-shape-xl) var(--md-shape-xl) 0 0;
+  padding: 24px;
+  transform: translateY(40px);
+  transition: transform .25s;
+}
+.share-modal.open .share-modal-box { transform: translateY(0); }
+
+.share-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.share-modal-title {
+  font-size: 16px; font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+}
+.share-modal-close {
+  width: 36px; height: 36px; border-radius: 50%; border: none;
+  background: transparent; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: background .15s;
+}
+.share-modal-close:hover { background: var(--md-sys-color-surface-container-highest); }
+
+.share-preview {
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-md);
+  padding: 16px; margin-bottom: 20px;
+  font-size: 14px; line-height: 2;
+  color: var(--md-sys-color-on-surface);
+  direction: auto; max-height: 200px;
+  overflow-y: auto;
+}
+
+.share-actions {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.share-action-btn {
+  flex: 1; min-width: 120px; height: 44px;
+  border-radius: var(--md-shape-full); border: none; cursor: pointer;
+  font-family: var(--md-font); font-size: 13px; font-weight: 500;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all .15s;
+}
+.share-action-btn.whatsapp {
+  background: #25D366; color: #fff;
+}
+.share-action-btn.whatsapp:hover { background: #1ebe5d; }
+.share-action-btn.twitter {
+  background: #000; color: #fff;
+}
+.share-action-btn.twitter:hover { background: #333; }
+.share-action-btn.copy {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+.share-action-btn.copy:hover { opacity: .9; }
 
 /* ── NAV SURAH (prev/next) ── */
 .surah-nav {
