@@ -78,7 +78,7 @@ async function initSurah() {
      if (surahNum !== 1 && surahNum !== 9 && a.numberInSurah === 1) {
   // Hapus semua variasi bismillah di awal teks Arab
   arabic = arabic.replace(/^[\u0600-\u06FF\s\u064B-\u065F]+?(?=[\u0627\u0623\u0625\u0644\u0628\u062A\u062C\u062D])/u, '');
-  arabic = arabic.replace(/^بِسْمِ.{10,40}يمِ\s*/u, '');
+  arabic = arabic.replace(/^بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ.{10,40}يمِ\s*/u, '');
   arabic = arabic.trim();
   // Hapus bismillah terjemah
   terjemah = terjemah.replace(
