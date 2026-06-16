@@ -159,6 +159,7 @@ body {
   transition: all .15s; min-height: 88px;
   text-decoration: none;
   box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  width: 100%;
 }
 .surah-card:hover {
   box-shadow: 0 4px 16px rgba(0,0,0,.1);
