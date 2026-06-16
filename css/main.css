@@ -148,7 +148,7 @@ body {
 
 /* ── SURAH CARD (MD3 Filled Card) ── */
 .surah-card {
-  background: var(--md-sys-color-surface-container);
+  background: var(--md-sys-color-surface-container-lowest);
   border: 1px solid var(--md-sys-color-outline-variant);
   border-radius: var(--md-shape-lg);
   padding: 16px; cursor: pointer;
