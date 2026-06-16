@@ -155,6 +155,7 @@ body {
   display: flex; align-items: center; gap: 14px;
   transition: all .15s; min-height: 80px;
   text-decoration: none;
+  width: 100%;
 }
 .surah-card:hover {
   background: var(--md-sys-color-surface-container-high);
