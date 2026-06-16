@@ -146,6 +146,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
+  width: 100%;
 }
 
 /* ── SURAH CARD (Qurani.io style) ── */
