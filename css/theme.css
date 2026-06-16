@@ -3,8 +3,8 @@
    theme.css
    ============================================ */
 
-/* ── DARK (default) ── */
-:root {
+/* ── LIGHT (default) ── */
+:light {
   --md-sys-color-primary: rgb(219 198 110);
   --md-sys-color-surface-tint: rgb(219 198 110);
   --md-sys-color-on-primary: rgb(58 48 0);
@@ -66,8 +66,8 @@
   --safe-b:         env(safe-area-inset-bottom, 0px);
 }
 
-/* ── LIGHT ── */
-.light {
+/* ── DARK ── */
+.root {
   --md-sys-color-primary: rgb(30 90 60);
   --md-sys-color-surface-tint: rgb(30 90 60);
   --md-sys-color-on-primary: rgb(255 255 255);
